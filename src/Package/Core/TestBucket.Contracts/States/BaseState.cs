@@ -20,6 +20,11 @@ public class BaseState
     public List<string>? AllowedStates { get; set; }
 
     /// <summary>
+    /// Aliases for the state
+    /// </summary>
+    public List<string>? Aliases { get; set; }
+
+    /// <summary>
     /// Is the final state
     /// </summary>
     public bool IsFinal { get; set; }

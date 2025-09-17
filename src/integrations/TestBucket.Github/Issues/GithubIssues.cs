@@ -6,6 +6,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Github.Mapping;
 using TestBucket.Github.Models;
+using TestBucket.Integrations;
 
 namespace TestBucket.Github.Issues;
 public class GithubIssues : GithubIntegrationBaseClient, IExternalIssueProvider
@@ -102,11 +103,11 @@ public class GithubIssues : GithubIntegrationBaseClient, IExternalIssueProvider
         return dtos;
     }
 
-    public Task CreateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    public Task CreateIssueAsync(IExtensionApi api, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
-    public Task UpdateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    public Task UpdateIssueAsync(IExtensionApi api, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }

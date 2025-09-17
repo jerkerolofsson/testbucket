@@ -120,8 +120,17 @@
   <data name="accepted" xml:space="preserve">
     <value>Accepted</value>
   </data>
+  <data name="aliases" xml:space="preserve">
+    <value>Aliases</value>
+  </data>
+  <data name="aliases-description" xml:space="preserve">
+    <value>Alternative names used in external systems. This is used when mapping internal and external states. Add one state per line.</value>
+  </data>
   <data name="allowed-transitions" xml:space="preserve">
     <value>Allowed state transitions</value>
+  </data>
+  <data name="allowed-transitions-description" xml:space="preserve">
+    <value>List of target states that can be selected when the entity is in this state. Add one state per line.</value>
   </data>
   <data name="assigned" xml:space="preserve">
     <value>Assigned</value>
@@ -155,6 +164,12 @@
   </data>
   <data name="inprogress" xml:space="preserve">
     <value>In Progress</value>
+  </data>
+  <data name="mapped-state" xml:space="preserve">
+    <value>State category</value>
+  </data>
+  <data name="mapped-state-description" xml:space="preserve">
+    <value>Helps identify where an issue is in its lifecycle.</value>
   </data>
   <data name="notstarted" xml:space="preserve">
     <value>Not started</value>

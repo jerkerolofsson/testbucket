@@ -2,7 +2,7 @@
 
 namespace TestBucket.Jira
 {
-    class JiraExtension : IExtension
+    internal class JiraExtension : IExtension
     {
         public string SystemName => ExtensionConstants.SystemName;
 

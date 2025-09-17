@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestBucket.Jira
+﻿namespace TestBucket.Jira
 {
-    class ExtensionConstants
+    public class ExtensionConstants
     {
         public const string SystemName = "Jira";
         public const string FriendlyName = "Jira";

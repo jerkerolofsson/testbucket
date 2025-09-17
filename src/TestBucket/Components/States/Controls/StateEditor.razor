@@ -11,8 +11,25 @@
             <MudTextField id="state-name" Variant="Variant.Outlined" Value="State.Name" T="string" ValueChanged="OnNameChanged"></MudTextField>
         </Field>
 
+		<Field Row>
+			<FieldHeader for="aliases">
+				<div class="tb-fields-name-description-tight">
+					<div>@loc.States["aliases"]</div>
+					<FieldDescription>@loc.States["aliases-description"]</FieldDescription>
+				</div>
+			</FieldHeader>
+			<MudSpacer />
+			<MudTextField Lines="10" id="saliases" Variant="Variant.Outlined" Value="@_aliases" T="string" ValueChanged="OnAliasesChanged"></MudTextField>
+		</Field>
+
         <Field Row>
-            <FieldHeader for="mapped-state">@loc.States["mapped-state"]</FieldHeader>
+            <FieldHeader for="mapped-state">
+				<div class="tb-fields-name-description-tight">
+					<div>@loc.States["mapped-state"]</div>
+					<FieldDescription>@loc.States["mapped-state-description"]</FieldDescription>
+				</div>
+			</FieldHeader>
+
             <MudSpacer />
             <MudSelect id="mapped-state" Variant="Variant.Outlined" T="string" Value="@State.GetMappedState()" ValueChanged="OnMappedStateChanged">
                 @foreach (var mappedStateString in State.GetMappedStates())
@@ -29,7 +46,12 @@
             <ColorCellPicker id="state-color" @bind-Color="State.Color" />
         </Field>
         <Field Row>
-            <FieldHeader for="state-allowed">@loc.States["allowed-transitions"]</FieldHeader>
+            <FieldHeader for="state-allowed">
+				<div class="tb-fields-name-description-tight">
+					<div>@loc.States["allowed-transitions"]</div>
+					<FieldDescription>@loc.States["allowed-transitions-description"]</FieldDescription>
+				</div>
+			</FieldHeader>
             <MudSpacer />
             <MudTextField Lines="10" id="state-allowed" Variant="Variant.Outlined" Value="@_allowedTransitions" T="string" ValueChanged="OnAllowedTransitionsChanged"></MudTextField>
         </Field>
@@ -38,42 +60,57 @@
 }
 
 @code {
-    [Parameter] public BaseState? State { get; set; }
+	[Parameter] public BaseState? State { get; set; }
 
-    private string _allowedTransitions = "";
+	private string _allowedTransitions = "";
+	private string _aliases = "";
 
-    private void OnMappedStateChanged(string mappedStateString)
-    {
-        if (State is not null)
-        {
-            State.SetMappedState(mappedStateString);
-        }
-    }
-    private void OnNameChanged(string name)
-    {
-        if(State is not null)
-        {
-            State.Name = name;
-            State.SetMappedState(name);
-        }
-    }
+	private void OnMappedStateChanged(string mappedStateString)
+	{
+		if (State is not null)
+		{
+			State.SetMappedState(mappedStateString);
+		}
+	}
+	private void OnNameChanged(string name)
+	{
+		if(State is not null)
+		{
+			State.Name = name;
+			State.SetMappedState(name);
+		}
+	}
 
-    private void OnAllowedTransitionsChanged(string allowedTransitions)
-    {
-        if (State is not null)
-        {
-            State.AllowedStates = allowedTransitions.Split('\n').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-        }
-    }
+	private void OnAllowedTransitionsChanged(string allowedTransitions)
+	{
+		if (State is not null)
+		{
+			State.AllowedStates = allowedTransitions.Split('\n').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+		}
+	}
+	private void OnAliasesChanged(string text)
+	{
+		if (State is not null)
+		{
+			State.Aliases = text.Split('\n').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+		}
+	}
 
-    protected override void OnParametersSet()
-    {
-        if (State is not null)
-        {
-            if (State.AllowedStates is not null)
-            {
-                _allowedTransitions = string.Join('\n', State.AllowedStates);
-            }
+	protected override void OnParametersSet()
+	{
+		if (State is not null)
+		{
+			_allowedTransitions = "";
+			if (State.AllowedStates is not null)
+			{
+				_allowedTransitions = string.Join('\n', State.AllowedStates);
+			}
+
+			_aliases = "";
+			if(State.Aliases is not null)
+			{
+				_aliases = string.Join('\n', State.Aliases);
+			}
         }
     }
 }

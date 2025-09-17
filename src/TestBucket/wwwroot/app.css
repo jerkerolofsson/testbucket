@@ -1578,3 +1578,8 @@ footer .tb-progress {
 
     font-size: 8pt;
 }
+
+.mud-chip.mud-chip-size-small .mud-chip-close-button {
+    /* Default is -4px in MudBlazor but the button is slightly cropped*/
+    margin-inline-end: -3px;
+}

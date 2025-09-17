@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Jira.Models;
-internal class JiraStatus
+
+internal class DoTransition
 {
-    public string? Name { get; set; }
+    public required Transition transition { get; set; }
 }

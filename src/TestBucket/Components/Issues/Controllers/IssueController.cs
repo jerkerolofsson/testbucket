@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
-using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Issues.States;
-using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;

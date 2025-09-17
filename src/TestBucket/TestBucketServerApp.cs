@@ -420,6 +420,8 @@ public static class TestBucketServerApp
         // Issues
         builder.Services.AddScoped<ICommand, CreateIssueCommand>();
         builder.Services.AddScoped<ICommand, CloseIssueCommand>();
+        builder.Services.AddScoped<ICommand, DeleteIssueCommand>();
+        builder.Services.AddScoped<ICommand, LinkIssueWithIntegrationCommand>();
 
         // Run
         builder.Services.AddScoped<ICommand, AssignAllUnassignedToAiRunner>();

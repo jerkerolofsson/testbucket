@@ -120,8 +120,17 @@
   <data name="accepted" xml:space="preserve">
     <value>受け入れられました</value>
   </data>
+  <data name="aliases" xml:space="preserve">
+    <value />
+  </data>
+  <data name="aliases-description" xml:space="preserve">
+    <value />
+  </data>
   <data name="allowed-transitions" xml:space="preserve">
     <value>許可された状態移行</value>
+  </data>
+  <data name="allowed-transitions-description" xml:space="preserve">
+    <value />
   </data>
   <data name="assigned" xml:space="preserve">
     <value>割り当て</value>
@@ -155,6 +164,12 @@
   </data>
   <data name="inprogress" xml:space="preserve">
     <value>進行中</value>
+  </data>
+  <data name="mapped-state" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mapped-state-description" xml:space="preserve">
+    <value />
   </data>
   <data name="notstarted" xml:space="preserve">
     <value>開始されていません</value>

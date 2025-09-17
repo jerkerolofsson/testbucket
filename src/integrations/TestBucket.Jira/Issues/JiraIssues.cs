@@ -1,10 +1,13 @@
 ﻿using System.Text;
+using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
+using TestBucket.Integrations;
 using TestBucket.Jira.Client;
 using TestBucket.Jira.Converters;
 using TestBucket.Jira.Models;
@@ -129,14 +132,14 @@ internal class JiraIssues : IExternalIssueProvider
             return [];
         }
     }
-    public async Task CreateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    public async Task CreateIssueAsync(IExtensionApi api, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
     {
         try
         {
             var jira = await CreateJiraClientAsync(externalSystemDto);
 
             // Create a new issue
-            await CreateIssueAsync(jira, externalSystemDto, issueDto, cancellationToken);
+            await CreateIssueAsync(api, jira, externalSystemDto, issueDto, cancellationToken);
         }
         catch (Exception)
         {
@@ -145,7 +148,25 @@ internal class JiraIssues : IExternalIssueProvider
         }
     }
 
-    private async Task CreateIssueAsync(JiraOauth2Client jira, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    public async Task UpdateIssueAsync(IExtensionApi api, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var jira = await CreateJiraClientAsync(externalSystemDto);
+
+            if (!string.IsNullOrEmpty(issueDto.ExternalId))
+            {
+                // Update existing issue
+                await UpdateExistingIssueAsync(api, jira, issueDto, cancellationToken);
+            }
+        }
+        catch (Exception)
+        {
+            // Log exception in real implementation
+            throw;
+        }
+    }
+    private async Task CreateIssueAsync(IExtensionApi api, JiraOauth2Client jira, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
     {
         try
         {
@@ -175,6 +196,8 @@ internal class JiraIssues : IExternalIssueProvider
             var updateBean = new JiraIssueUpdateBean();
             updateBean.fields.project = project;
             updateBean.fields.issuetype = issueType;
+            bool changed = UpdateBean(api, jira, issueDto, null, updateBean);
+
             if (issueDto.Title is not null)
             {
                 updateBean.SetSummary(issueDto.Title);
@@ -182,11 +205,6 @@ internal class JiraIssues : IExternalIssueProvider
             if (issueDto.Description is not null)
             {
                 updateBean.fields.description = ContentConverter.FromMarkdown(issueDto.Description);
-            }
-
-            if (issueDto.State is not null)
-            {
-                var stateName = MapStateToJiraStateName(new IssueState(issueDto.State, issueDto.MappedState), new DefaultStateMap());
             }
 
             var response = await jira.Issues.CreateIssueAsync(updateBean, cancellationToken);
@@ -200,99 +218,115 @@ internal class JiraIssues : IExternalIssueProvider
         }
     }
 
-    public async Task UpdateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var jira = await CreateJiraClientAsync(externalSystemDto);
 
-            if (!string.IsNullOrEmpty(issueDto.ExternalId))
-            {
-                // Update existing issue
-                await UpdateExistingIssueAsync(jira, issueDto, cancellationToken);
-            }
-        }
-        catch (Exception)
-        {
-            // Log exception in real implementation
-            throw;
-        }
-    }
-
-    //private async Task CreateNewIssueAsync(Atlassian.Jira.Jira jira, ExternalSystemDto system, IssueDto issueDto, CancellationToken cancellationToken)
-    //{
-    //    var issue = jira.CreateIssue(system.ExternalProjectId);
-    //    issue.Type = issueDto.IssueType ?? "Task";
-    //    issue.Summary = issueDto.Title ?? "";
-    //    issue.Description = issueDto.Description;
-
-    //    if (!string.IsNullOrEmpty(issueDto.AssignedTo))
-    //    {
-    //        issue.Assignee = issueDto.AssignedTo;
-    //    }
-
-    //    await issue.SaveChangesAsync();
-
-    //    // Update the DTO with the created issue ID
-    //    issueDto.ExternalId = issue.Key?.Value;
-    //    issueDto.ExternalDisplayId = issue.Key?.Value;
-    //}
-
-    private async Task UpdateExistingIssueAsync(JiraOauth2Client jira, IssueDto issueDto, CancellationToken cancellationToken)
+    private async Task UpdateExistingIssueAsync(IExtensionApi api, JiraOauth2Client jira, IssueDto issueDto, CancellationToken cancellationToken)
     {
         var issue = await jira.Issues.GetIssueAsync(issueDto.ExternalId!);
 
         if (issue?.fields != null)
         {
-            bool changed = false;
-
             JiraIssueUpdateBean update = new();
-
-            if (issueDto.Title != issue.fields.summary && issueDto.Title != null)
-            {
-                update.SetSummary(issueDto.Title);
-                changed = true;
-            }
-          
-            if (issueDto.Labels is not null)
-            {
-                var labels = issue.fields?.labels ?? [];
-
-                foreach (var label in issueDto.Labels)
-                {
-                    var labelWithoutSpaces = label.Replace(' ', '-');
-
-                    if (!labels.Contains(labelWithoutSpaces))
-                    {
-                        update.AddLabel(labelWithoutSpaces);
-                    }
-                }
-                foreach (var label in labels)
-                {
-                    var labelWithoutSpaces = label.Replace(' ', '-');
-                    if (!issueDto.Labels.Contains(labelWithoutSpaces))
-                    {
-                        update.RemoveLabel(labelWithoutSpaces);
-                    }
-                }
-                //update.fields.labels = issueDto.Labels;
-                changed = true;
-            }
-
-            if (issue.fields is not null)
-            {
-                var state = MapJiraStatusToMappedState(issue.fields.status?.name, new DefaultStateMap());
-                if (issueDto.MappedState != state.MappedState)
-                {
-                    // todo..
-                }
-            }
+            bool changed = UpdateBean(api, jira, issueDto, issue, update);
 
             if (changed && !string.IsNullOrEmpty(issue.key))
             {
                 await jira.Issues.UpdateIssueAsync(issue.key, update, cancellationToken);
             }
         }
+
+
+        // Collect jira status names and map from the internal state
+        await TransitionStateAsync(api, jira, issueDto, issue, cancellationToken);
+    }
+
+    private static async Task TransitionStateAsync(IExtensionApi api, JiraOauth2Client jira, IssueDto issueDto, JiraIssue? issue, CancellationToken cancellationToken)
+    {
+        Status? status = await GetWantedJiraStatusAsync(api, jira, issueDto, cancellationToken);
+        if (status is not null && issue?.key is not null)
+        {
+            if (issue.fields?.status?.name != status.name)
+            {
+                // We know the wanted status, but depending on the workflow in Jira a state transition may not be allowed..
+                // 1. Get possible transitions
+                var transitions = await jira.Issues.GetTransitionsAsync(issue.key, cancellationToken);
+                var transition = transitions.FirstOrDefault(x => x.to?.id == status.id);
+                if (transition?.id is not null)
+                {
+                    // Transition is allowed: do it
+                    await jira.Issues.DoTransitionAsync(issue.key, transition.id, cancellationToken);
+                }
+            }
+        }
+    }
+
+    private static bool UpdateBean(IExtensionApi api, JiraOauth2Client jira, IssueDto issueDto, JiraIssue? issue, JiraIssueUpdateBean update, CancellationToken cancellationToken = default)
+    {
+        bool changed = false;
+        if ((issue?.fields is null || issueDto.Title != issue.fields.summary) && issueDto.Title != null)
+        {
+            update.SetSummary(issueDto.Title);
+            changed = true;
+        }
+        if ((issue?.fields?.description is null || issueDto.Description != issue.fields.description?.text))
+        {
+            //update.SetDescription()
+            //changed = true;
+        }
+
+
+        if (issueDto.Labels is not null)
+        {
+            var labels = issue?.fields?.labels ?? [];
+
+            foreach (var label in issueDto.Labels)
+            {
+                var labelWithoutSpaces = label.Replace(' ', '-');
+
+                if (!labels.Contains(labelWithoutSpaces))
+                {
+                    update.AddLabel(labelWithoutSpaces);
+                }
+            }
+            foreach (var label in labels)
+            {
+                var labelWithoutSpaces = label.Replace(' ', '-');
+                if (!issueDto.Labels.Contains(labelWithoutSpaces))
+                {
+                    update.RemoveLabel(labelWithoutSpaces);
+                }
+            }
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private static async Task<Status?> GetWantedJiraStatusAsync(IExtensionApi api, JiraOauth2Client jira, IssueDto issueDto, CancellationToken cancellationToken)
+    {
+        var statuses = await jira.Issues.GetStatusesAsync(cancellationToken);
+        var jiraStatusNames = statuses.Where(x => x.name is not null).Select(x => x.name!).ToArray();
+        var translator = await api.GetStateTranslatorAsync();
+        var externalStatus = translator.GetExternalIssueState(issueDto.MappedState, issueDto.State ?? "", jiraStatusNames);
+        var status = statuses.FirstOrDefault(x => x.name == externalStatus);
+        return status;
+    }
+
+    private static MappedIssueState GetMappedState(Status status)
+    {
+        if (status.statusCategory?.key == "new")
+        {
+            return MappedIssueState.Closed;
+        }
+        if (status.statusCategory?.key == "to-do")
+        {
+            return MappedIssueState.Open;
+        }
+        if (status.statusCategory?.name == "In Progress")
+        {
+            return MappedIssueState.InProgress;
+        }
+
+        return MappedIssueState.Open;
     }
 
     internal static IssueDto MapJiraIssueToDto(JiraIssue jiraIssue, ExternalSystemDto system, IssueStateMapping stateMapping)

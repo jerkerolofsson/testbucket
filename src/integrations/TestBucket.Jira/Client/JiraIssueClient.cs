@@ -135,6 +135,23 @@ internal class JiraIssueClient(JiraOauth2Client Client)
         return JiraIssueSerializer.DeserializeJson(json);
     }
 
+    internal async Task<Transition[]> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        // Ensure the OAuth2 client has been properly configured with a cloud resource
+        Client.ThrowIfCloudResourceNotInitialized();
+
+        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/issue/{issueIdOrKey}/transitions";
+        var response = await Client._httpClient.GetFromJsonAsync<JiraGetTransitionsResponse>(url, cancellationToken);
+        return response?.transitions ?? [];
+    }
+    internal async Task<List<Status>> GetStatusesAsync(CancellationToken cancellationToken = default)
+    {
+        // Ensure the OAuth2 client has been properly configured with a cloud resource
+        Client.ThrowIfCloudResourceNotInitialized();
+
+        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/status";
+        return await Client._httpClient.GetFromJsonAsync<List<Status>>(url, cancellationToken) ?? [];
+    }
     internal async Task<List<JiraIssueType>> GetIssueTypesAsync(CancellationToken cancellationToken)
     {
         // Ensure the OAuth2 client has been properly configured with a cloud resource
@@ -174,6 +191,24 @@ internal class JiraIssueClient(JiraOauth2Client Client)
         if(!response.IsSuccessStatusCode)
         {
             var json = JsonSerializer.Serialize(issue, JiraIssueSerializer.JsonOptions);
+            var text = response.Content.ReadAsStringAsync();
+        }
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    internal async Task DoTransitionAsync(string key, string id, CancellationToken cancellationToken)
+    {
+        // Ensure the OAuth2 client has been properly configured with a cloud resource
+        Client.ThrowIfCloudResourceNotInitialized();
+
+        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/issue/{key}/transitions";
+
+        var request = new DoTransition { transition = new Transition { id = id } };
+        using var response = await Client._httpClient.PostAsJsonAsync(url, request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
             var text = response.Content.ReadAsStringAsync();
         }
 

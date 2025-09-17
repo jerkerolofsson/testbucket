@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Issues"
+@using System.Threading.Tasks
 @using TestBucket.Components.Shared.Commands
 @using TestBucket.Components.Issues.Layouts
 @using TestBucket.Components.Labels.Controllers
@@ -31,9 +32,11 @@
         </MudStack>
 
         <MudDataGrid @ref="_grid"
-        ServerData="LoadGridData"
-        Dense Hover RowClass="tb-datarow cursor-pointer"
-        RowClick="(row) => OnRowClicked(row.Item)"
+			ServerData="LoadGridData"
+			Dense Hover 
+			RowClass="tb-datarow cursor-pointer"
+			RowContextMenuClick="(row) => OnRowContextMenuClicked(row)"
+			RowClick="(row) => OnRowClicked(row)"
         T="LocalIssue" SortMode="SortMode.None">
 
             <ToolBarContent>
@@ -131,50 +134,71 @@
             </PagerContent>
         </MudDataGrid>
     }
+
+	<MudMenu PositionAtCursor="true" @ref="_contextMenu">
+		<CommandMenuItems TypeNames="issue"/>
+	</MudMenu>
+
 </MudStack>
 
 @code {
-    [Parameter] public string TenantId { get; set; } = "";
-    [CascadingParameter] public TestProject? Project { get; set; }
-    [CascadingParameter] public UserPreferences? UserPreferences { get; set; }
-    [CascadingParameter] public Team? Team { get; set; }
+	[Parameter] public string TenantId { get; set; } = "";
+	[CascadingParameter] public TestProject? Project { get; set; }
+	[CascadingParameter] public UserPreferences? UserPreferences { get; set; }
+	[CascadingParameter] public Team? Team { get; set; }
 
-    [SupplyParameterFromQuery(Name = "q")] public string? Query { get; set; }
+	[SupplyParameterFromQuery(Name = "q")] public string? Query { get; set; }
 
-    private MudDataGrid<LocalIssue>? _grid;
-    private string? _searchText;
-    private bool _semanticSearch = true;
+	private MudMenu? _contextMenu;
+	private MudDataGrid<LocalIssue>? _grid;
+	private string? _searchText;
+	private bool _semanticSearch = true;
 
-    private long? _totalCount;
+	private long? _totalCount;
 
-    private IReadOnlyList<Label> _labels = [];
+	private IReadOnlyList<Label> _labels = [];
 
-    public string GetLabelColor(string name)
-    {
-        var label = _labels.Where(x=>x.Title == name).FirstOrDefault();
-        return label?.Color ?? "#777";
-    }
+	public string GetLabelColor(string name)
+	{
+		var label = _labels.Where(x=>x.Title == name).FirstOrDefault();
+		return label?.Color ?? "#777";
+	}
 
-    protected override async Task OnParametersSetAsync()
-    {
-        if(Project is not null && _labels.Count == 0)
-        {
-            _labels = await labelController.GetLabelsAsync(Project);
-        }
+	protected override async Task OnParametersSetAsync()
+	{
+		if(Project is not null && _labels.Count == 0)
+		{
+			_labels = await labelController.GetLabelsAsync(Project);
+		}
 
-        appNavigationManager.State.ClearSelection();
-        OnSearch(Query ?? "state:open is:issue");
-    }
+		appNavigationManager.State.ClearSelection();
+		OnSearch(Query ?? "state:open is:issue");
+	}
 
-    protected void OnSearch(string text)
-    {
-        _searchText = text;
-        _grid?.ReloadServerData();
-    }
-    private void OnRowClicked(LocalIssue issue)
-    {
-        appNavigationManager.NavigateTo(issue);
-    }
+	protected void OnSearch(string text)
+	{
+		_searchText = text;
+		_grid?.ReloadServerData();
+	}
+
+	private async Task OnRowContextMenuClicked(DataGridRowClickEventArgs<LocalIssue> row)
+	{
+		if(_contextMenu is null)
+		{
+			return;
+		}
+
+		var issue = row.Item;
+		appNavigationManager.State.SetSelectedIssue(issue);
+		await _contextMenu.OpenMenuAsync(row.MouseEventArgs, false);
+	}
+
+	private Task OnRowClicked(DataGridRowClickEventArgs<LocalIssue> row)
+	{
+		var issue = row.Item;
+		appNavigationManager.NavigateTo(issue);
+		return Task.CompletedTask;
+	}
 
     private async Task AddIssue()
     {

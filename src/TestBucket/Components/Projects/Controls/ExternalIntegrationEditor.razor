@@ -66,6 +66,12 @@
                                 <MudSpacer />
                                 <MudTextField Value="Integration.ClientSecret" T="string" ValueChanged="OnClientSecretChanged" />
                             </Field>
+
+							@if(Extension.SystemName == "Jira")
+							{
+								<MudText>Manage your app at https://developer.atlassian.com/console/myapps</MudText>
+							}
+
                             <Field Row>
                                 <FieldHeader>@intLoc["scope"]</FieldHeader>
                                 <MudSpacer />

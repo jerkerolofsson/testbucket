@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Issues.Models;
+using TestBucket.Integrations;
 
 namespace TestBucket.Contracts.Integrations;
 
@@ -50,7 +51,7 @@ public interface IExternalIssueProvider
     /// <param name="issueDto"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task CreateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken);
+    Task CreateIssueAsync(IExtensionApi api, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken);
 
     /// <summary>
     /// Saves changes to an issue in an external system.
@@ -59,5 +60,5 @@ public interface IExternalIssueProvider
     /// <param name="issueDto"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task UpdateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken);
+    Task UpdateIssueAsync(IExtensionApi api, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken);
 }

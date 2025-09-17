@@ -2,13 +2,10 @@
 
 using TestBucket.Components.Issues.Controllers;
 using TestBucket.Components.Issues.Dialogs;
-using TestBucket.Components.Requirements.Dialogs;
-using TestBucket.Components.Requirements.Services;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Keyboard;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Issues.Commands;
@@ -31,7 +28,7 @@ internal class CreateIssueCommand : ICommand
 
     public string? Icon => TbIcons.BoldDuoTone.Bug;
 
-    public string[] ContextMenuTypes => ["menu-new"];
+    public string[] ContextMenuTypes => ["menu-new", "issue"];
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.Issue;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     private readonly IStringLocalizer<SharedStrings> _loc;

@@ -13,6 +13,7 @@ using NGitLab.Models;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Integrations;
 
 namespace TestBucket.Gitlab.Issues;
 public class GitlabIssueProvider : IExternalIssueProvider
@@ -157,11 +158,11 @@ public class GitlabIssueProvider : IExternalIssueProvider
         return issues;
     }
 
-    public Task CreateIssueAsync(ExternalSystemDto config, IssueDto issue, CancellationToken cancellationToken)
+    public Task CreateIssueAsync(IExtensionApi api, ExternalSystemDto config, IssueDto issue, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
-    public async Task UpdateIssueAsync(ExternalSystemDto config, IssueDto issue, CancellationToken cancellationToken)
+    public async Task UpdateIssueAsync(IExtensionApi api, ExternalSystemDto config, IssueDto issue, CancellationToken cancellationToken)
     {
         if (long.TryParse(issue.ExternalId, out var issueId))
         {

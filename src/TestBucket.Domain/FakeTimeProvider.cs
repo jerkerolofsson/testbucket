@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TestBucket.Domain;
 
@@ -15,6 +16,12 @@ internal class FakeTimeProvider : TimeProvider
         {
             _offset = offset.Value;
         }
+    }
+
+    public DateTimeOffset Advance(TimeSpan amount)
+    {
+        _dateTimeOffset += amount;
+        return _dateTimeOffset;
     }
 
     public void SetDateTime(DateTimeOffset dateTime)

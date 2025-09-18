@@ -131,7 +131,7 @@ namespace TestBucket.Domain.UnitTests.Appearance.Themes
             // Arrange
 
             // Act
-            var result = await _themeManager.GetThemeByNameAsync("Le Trigre");
+            var result = await _themeManager.GetThemeByNameAsync("Le Tigre");
 
             // Assert
             Assert.NotNull(result);

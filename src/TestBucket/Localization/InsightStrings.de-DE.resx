@@ -168,6 +168,12 @@
   <data name="dark-mode" xml:space="preserve">
     <value>Dunkler Modus</value>
   </data>
+  <data name="dashboard-name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="dashboards" xml:space="preserve">
+    <value />
+  </data>
   <data name="data-mode" xml:space="preserve">
     <value>Datenmodus</value>
   </data>
@@ -208,6 +214,9 @@
   </data>
   <data name="palette" xml:space="preserve">
     <value>Palette</value>
+  </data>
+  <data name="rearrange" xml:space="preserve">
+    <value />
   </data>
   <data name="results" xml:space="preserve">
     <value>Ergebnisse</value>

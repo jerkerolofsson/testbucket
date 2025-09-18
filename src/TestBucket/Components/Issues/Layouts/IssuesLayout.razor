@@ -67,7 +67,7 @@
                                     <MudText Class="mt-5">@loc["settings"]</MudText>
 
 									<MudNavLink Href="@appNavigationManager.GetMilestonesUrl()">
-										<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+										<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="1">
 											<MudIcon Size="Size.Small" Icon="@TbIcons.BoldDuoTone.Flag"/>
 											@settingLoc["manage-milestones"]
 											<MudSpacer />
@@ -76,7 +76,7 @@
 									</MudNavLink>
 
 									<MudNavLink Href="@appNavigationManager.GetLabelsUrl()">
-										<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+										<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="1">
 											<MudIcon Size="Size.Small" Icon="@TbIcons.IconSaxDuoTone.Label" />
 											@settingLoc["manage-labels"]
 											<MudSpacer />

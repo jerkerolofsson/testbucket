@@ -8,6 +8,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject UserPreferencesService preferencesController
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<InsightStrings> insightLoc
 @inject DashboardController controller
 
 <TenantRedirect />
@@ -16,13 +17,20 @@
     <StartContent>
 
         <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
+
+			<MudText Typo="Typo.h1">@insightLoc["dashboards"]</MudText>
+
             <MudNavMenu>
                 @foreach(var dashboard in _dashboards)
                 {
                     string url = appNavigationManager.GetReportingDashboardUrl(dashboard.Id);
 
                     <MudNavLink Href="@url">
-                        <MudText>@dashboard.Name</MudText>
+						<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="1">
+							<MudIcon Size="Size.Small" Icon="@TbIcons.IconSaxDuoTone.ChartSquare" />
+							@dashboard.Name
+							<MudSpacer />
+						</MudStack>
                     </MudNavLink>
                 }
             </MudNavMenu>

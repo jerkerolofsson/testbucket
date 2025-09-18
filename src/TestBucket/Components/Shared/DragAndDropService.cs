@@ -2,7 +2,7 @@
 
 public class DragAndDropService<T>
 {
-    public T? Data { get; set; }
+    public T? Data { get; private set; }
 
     /// <summary>
     /// Returns true if there is data of the specified type
@@ -12,6 +12,10 @@ public class DragAndDropService<T>
     public void StartDrag(T data)
     {
         this.Data = data;
+    }
+    public void StopDrag()
+    {
+        this.Data = default(T);
     }
 
 }

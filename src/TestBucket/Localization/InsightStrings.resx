@@ -168,6 +168,13 @@
   <data name="dark-mode" xml:space="preserve">
     <value>Dark mode</value>
   </data>
+  <data name="dashboard-name" xml:space="preserve">
+    <value>Dashboard name</value>
+  </data>
+  <data name="dashboards" xml:space="preserve">
+    <value>Dashboards</value>
+    <comment>Plural of dashboards</comment>
+  </data>
   <data name="data-mode" xml:space="preserve">
     <value>Data mode</value>
   </data>
@@ -208,6 +215,9 @@
   </data>
   <data name="palette" xml:space="preserve">
     <value>Palette</value>
+  </data>
+  <data name="rearrange" xml:space="preserve">
+    <value>Rearrange</value>
   </data>
   <data name="results" xml:space="preserve">
     <value>Results</value>

@@ -1184,26 +1184,11 @@ div.tb-profile-image.tb-background-9 {
 
     background: linear-gradient(180deg, rgba(24, 32, 71, 0.9) 0%, #3F3682 211.07%);
     box-shadow: 0px 8px 12px 0px rgba(0, 0, 0, 0.28), 0px 0px 2px 0px rgba(0, 0, 0, 0.24);
-
-    /* Glass style */
-/*    background: rgba(255, 255, 255, 0.2);
-
-    background: linear-gradient(270deg, #ffffff4f, #ffffff00);
-    background-size: 400% 400%;
-    background-position: 20% 50%;
- 
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-
-    border: 1px solid rgba(255, 255, 255, 0.05);
-
-    animation: ItemHoverAnimation 300ms linear forwards;*/
 }
 
 /* Chart container, metrics, */
 .tb-tile {
-    padding: 24px;
+    padding: 16px;
     border: solid 1px var(--mud-palette-lines-inputs);
     background: var(--mud-palette-surface);
 }

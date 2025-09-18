@@ -1,23 +1,51 @@
-﻿@typeparam T
+﻿@using MudBlazor.Utilities
+@typeparam T
 @inject DragAndDropService<T> service
 
-<div ondragover="event.preventDefault()"
+<div class="@CssClass"
+	 ondragover="event.preventDefault()"
     @ondrop:stopPropagation="true"
+	@ondragenter="OnDragEnter"
+	@ondragleave="OnDragLeave"
     @ondrop="OnDropEvent">
     @ChildContent
 </div>
 
 @code {
 
-    [Parameter] public EventCallback<T> OnDrop { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+	private string CssClass => new CssBuilder("tb-dropzone")
+		.AddClass("drag-over", _isDragOver)
+		.Build();
+
+	[Parameter] public EventCallback<T> OnDrop { get; set; }
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+	private bool _isDragOver = false;
+
+	private void OnDragEnter(DragEventArgs e)
+	{
+		if (service.HasData)
+		{
+			_isDragOver = true;
+		}
+		else
+		{
+			_isDragOver = false;
+		}
+	}
+
+	private void OnDragLeave(DragEventArgs e)
+	{
+		_isDragOver = false;
+	}
 
     private async Task OnDropEvent(DragEventArgs e)
     {
+		_isDragOver = false;
         if (service.HasData)
         {
             await OnDrop.InvokeAsync(service.Data);
-            service.Data = default(T);
+            service.StopDrag();
         }
     }
 }

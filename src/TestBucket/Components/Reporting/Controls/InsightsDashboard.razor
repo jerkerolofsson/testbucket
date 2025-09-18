@@ -1,4 +1,5 @@
 ﻿@attribute [Authorize()]
+@using MudBlazor.Utilities
 @using TestBucket.Components.Issues.Layouts
 @using TestBucket.Components.Reporting.Controllers
 @using TestBucket.Components.Shared.Themeing.Models
@@ -21,6 +22,7 @@
 @inject ICommandManager commandManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
+@inject IStringLocalizer<InsightStrings> insightLoc
 @inject DashboardController controller
 
 <div class="@ContainerCssClass">
@@ -29,46 +31,96 @@
     {
         @if(!ReadOnly)
         {
-            <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
-                <MudTextField T="string" Value="_dashboard.Name" Variant="Variant.Outlined"/>
+            <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center" Class="top-bar">
+				<MudTextField T="string" Value="_dashboard.Name" Variant="Variant.Outlined" ShrinkLabel Label="@insightLoc["dashboard-name"]" />
                 <MudSpacer/>
+				<MudSwitchM3 @bind-Value="@EnableMove" Color="Color.Tertiary">@insightLoc["rearrange"]</MudSwitchM3>
                 <MudIconButton Color="Color.Error" data-testid="delete-dashboard" Icon="@Icons.Material.Filled.Delete" OnClick="DeleteDashboardAsync" />
-            </MudStack>
-        }
+			</MudStack>
 
-        <div class="tb-insights-dashboard">
-            @if (_dashboard.Specifications is not null)
-            {
-                @foreach (var data in _dashboard.Specifications)
-                {
-                    <div class="dash-cell" style="@GetSpecCssStyle(data)">
-                        <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" Spec="@data" 
-                            Delete="OnDeleteAsync"
-                            SpecChanged="OnSpecChangedAsync" />
-                    </div>
-                }
+			<div class="@CssClass">
+				@if (_dashboard.Specifications is not null)
+				{
+					@foreach (var data in _dashboard.Specifications)
+					{
+						<div class="dash-cell" style="@GetSpecCssStyle(data)">
+							<Draggable Data="@data" Enabled="@EnableMove">
+								<DropZone T="InsightsVisualizationSpecification" OnDrop="(droppedData) => OnDropRearrange(data, droppedData)">
+									<InsightsChart State="State" Project="Project" ReadOnly="@(ReadOnly || EnableMove)" UserQuery="@_query" Spec="@data"
+													Delete="OnDeleteAsync"
+													SpecChanged="OnSpecChangedAsync" />
+								</DropZone>
+							</Draggable>
+						</div>
+					}
 
-                @if(!ReadOnly)
-                {
-                    <div class="dash-cell cell-add">
-                        <MudPaper Elevation="2" Class="tb-tile">
-                            <button @onclick="AddSpec" class="add" data-testid="add" style="font-size: 64pt; width: 100%; height: 100%">+</button>
-                        </MudPaper>
-                    </div>
-                }
-            }
-        </div>
+					<div class="dash-cell cell-add">
+						<MudPaper Elevation="2" Class="tb-tile">
+							<button @onclick="AddSpec" class="add" data-testid="add" style="font-size: 64pt; width: 100%; height: 100%">+</button>
+						</MudPaper>
+					</div>
+				}
+			</div>
+		}
+		else
+		{
+			<div class="tb-insights-dashboard read-only">
+				@if (_dashboard.Specifications is not null)
+				{
+					@foreach (var data in _dashboard.Specifications)
+					{
+						<div class="dash-cell" style="@GetSpecCssStyle(data)">
+							<InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" Spec="@data"/>
+						</div>
+					}
+				}
+			</div>
+		}
     }
 </div>
 
 @code {
-    [Parameter] public bool ReadOnly { get; set; } = true;
-    [Parameter] public string? DashboardName { get; set; }
-    [Parameter] public long? DashboardId { get; set; }
-    [Parameter] public string Query { get; set; } = "";
-    [CascadingParameter] public TestProject Project { get; set; } = default!;
-    [CascadingParameter] public ApplicationState? State { get; set; }
-    [CascadingParameter] public Team? Team { get; set; }
+	[Parameter] public bool ReadOnly { get; set; } = true;
+	[Parameter] public bool EnableMove { get; set; } = false;
+	[Parameter] public string? DashboardName { get; set; }
+	[Parameter] public long? DashboardId { get; set; }
+	[Parameter] public string Query { get; set; } = "";
+	[CascadingParameter] public TestProject Project { get; set; } = default!;
+	[CascadingParameter] public ApplicationState? State { get; set; }
+	[CascadingParameter] public Team? Team { get; set; }
+
+	private string CssClass => new CssBuilder("tb-insights-dashboard")
+		.AddClass("enable-move", EnableMove)
+		.Build();
+
+
+	private async Task OnDropRearrange(InsightsVisualizationSpecification? target, InsightsVisualizationSpecification? data)
+	{
+		if(target is null || data is null || this._dashboard?.Specifications is null)
+		{
+			return;
+		}
+		if(data == target)
+		{
+			return;
+		}
+
+		var indexTarget = this._dashboard.Specifications.IndexOf(target);
+		var indexData = this._dashboard.Specifications.IndexOf(data);
+		if(indexTarget != indexData)
+		{
+			this._dashboard.Specifications.Remove(data);
+			this._dashboard.Specifications.Insert(indexTarget, data);
+			// if (indexTarget < indexData)
+			// {
+			// }
+			// else
+			// {
+			// 	this._dashboard.Specifications.Insert(indexTarget, data);
+			// }
+			await controller.UpdateDashboardAsync(_dashboard);
+		}
+	}
 
     private string GetSpecCssStyle(InsightsVisualizationSpecification spec)
     {

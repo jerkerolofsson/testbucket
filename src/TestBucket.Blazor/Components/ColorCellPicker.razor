@@ -9,7 +9,7 @@
     <MudPopover DropShadow
                 Square
                 Open="@_open" Fixed Class="px-4 pa-4" RelativeWidth="DropdownWidth.Relative" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
-        <MudStack Row Wrap="Wrap.Wrap">
+		<MudStack Row Wrap="Wrap.Wrap" Style="overflow: auto; max-height: 400px; width: 400px;">
             @foreach (var color in _colors)
             {
                 <ColorCell HighlighyOnHover Color="@color" Size="Size.Medium" OnClick="async () => await OnTextChanged(color)" />

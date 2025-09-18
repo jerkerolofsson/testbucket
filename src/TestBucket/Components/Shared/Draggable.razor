@@ -1,32 +1,48 @@
 ﻿@typeparam T
 @inject DragAndDropService<T> service
 
-@if (UseDragHandle)
+@if(!Enabled)
 {
-    <div class="tb-draggable">
-        <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
-            <div class="drag-handle" draggable="true" @ondragstart="OnDragStart">
-                <MudIcon Size="Size.Small" Icon="@MudBlazor.Icons.Material.Filled.DragIndicator"/>
-            </div>
-            @ChildContent
-        </MudStack>
-    </div>
+	<div class="tb-draggable">
+		@ChildContent
+	</div>
 }
 else
 {
-    <div class="tb-draggable" draggable="true" @ondragstart="OnDragStart">
-        @ChildContent
-    </div>
+	if (UseDragHandle)
+	{
+		<div class="tb-draggable">
+			<MudStack Row Spacing="0" AlignItems="AlignItems.Center">
+				<div class="drag-handle" draggable="true" @ondragstart="OnDragStart">
+					<MudIcon Size="Size.Small" Icon="@MudBlazor.Icons.Material.Filled.DragIndicator" />
+				</div>
+				@ChildContent
+			</MudStack>
+		</div>
+	}
+	else
+	{
+		<div class="tb-draggable" draggable="true" @ondragstart="OnDragStart">
+			@ChildContent
+		</div>
+	}
 }
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public T? Data { get; set; }
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	[Parameter] public T? Data { get; set; }
+	[Parameter] public bool Enabled {get;set;} = true;
 
-    [Parameter] public bool UseDragHandle { get; set; } = false;
+	[Parameter] public EventCallback<T> DragStart { get; set; }
 
-    private void OnDragStart(DragEventArgs e)
-    {
-        service.Data = this.Data;
-    }
+	[Parameter] public bool UseDragHandle { get; set; } = false;
+
+	private async Task OnDragStart(DragEventArgs e)
+	{
+		if (this.Data is not null)
+		{
+			service.StartDrag(this.Data);
+			await DragStart.InvokeAsync(this.Data);
+		}
+	}
 }

@@ -42,6 +42,15 @@ internal class TestRunCodeCoverageTrendDataSource : IInsightsDataSource
 
 
         var data = await _repo.GetCodeCoverageTrendAsync(filters);
+
+        if (query.DateFormat is not null)
+        {
+            try
+            {
+                return data.ConvertToStringLabels(label => label.ToString(query.DateFormat));
+            }
+            catch (FormatException) { } // user defined format..
+        }
         return data.ConvertToStringLabels();
     }
 }

@@ -65,12 +65,25 @@
                             <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
                                 <Authorized>
                                     <MudText Class="mt-5">@loc["settings"]</MudText>
-                                    <MudNavLink Href="@appNavigationManager.GetMilestonesUrl()" Icon="@TbIcons.BoldDuoTone.Flag">
-                                        @settingLoc["manage-milestones"]
-                                    </MudNavLink>
-                                    <MudNavLink Href="@appNavigationManager.GetLabelsUrl()" Icon="@TbIcons.IconSaxDuoTone.Label">
-                                        @settingLoc["manage-labels"]
-                                    </MudNavLink>
+
+									<MudNavLink Href="@appNavigationManager.GetMilestonesUrl()">
+										<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+											<MudIcon Size="Size.Small" Icon="@TbIcons.BoldDuoTone.Flag"/>
+											@settingLoc["manage-milestones"]
+											<MudSpacer />
+											<MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ChevronRight" />
+										</MudStack>
+									</MudNavLink>
+
+									<MudNavLink Href="@appNavigationManager.GetLabelsUrl()">
+										<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+											<MudIcon Size="Size.Small" Icon="@TbIcons.IconSaxDuoTone.Label" />
+											@settingLoc["manage-labels"]
+											<MudSpacer />
+											<MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ChevronRight" />
+										</MudStack>
+									</MudNavLink>
+
                                 </Authorized>
                             </PermissionView>
                

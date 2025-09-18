@@ -22,7 +22,11 @@ internal class InsightsDataManager : IInsightsDataManager
     {
         if (_dataSources.TryGetValue(query.DataSource, out var source))
         {
-            return await source.GetDataAsync(principal, projectId, query);
+            try
+            {
+                return await source.GetDataAsync(principal, projectId, query);
+            }
+            catch { }
         }
         return new InsightsData<string, double>();
     }

@@ -17,6 +17,7 @@ namespace TestBucket.Domain.UnitTests.Comments;
 /// </summary>
 [FunctionalTest]
 [EnrichedTest]
+[UnitTest]
 [Component("Comments")]
 public class CommentsManagerTests
 {

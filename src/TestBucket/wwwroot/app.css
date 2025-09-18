@@ -535,9 +535,6 @@ input:focus-visible {
     align-self: flex-end;
     text-decoration: none;
 }
-.tb-field:hover:has(.field-link) {
-    background: var(--mud-palette-primary-hover);
-}
 
 .tb-field > .flex-row > .mud-icon-root {
     margin-right: 8px;
@@ -708,6 +705,13 @@ table.tb-environment-variables {
     border: 1px solid transparent;
 }
 
+.tb-field:has(.field-link),
+.tb-field:has(.field-link) .tb-fields-name-description-tight, 
+.tb-field:has(.field-link) svg {
+    cursor: pointer;
+}
+
+.tb-field:hover:has(.field-link),
 .tb-trace-view .tb-traceability-node-link-wrapper:hover,
 .tb-background-hover:hover,
 .tb-datarow:hover,
@@ -1426,6 +1430,8 @@ div.tb-profile-image.tb-background-9 {
     overflow: hidden;
     display: grid;
     place-items: center;
+
+    border: solid 1px rgba(128,128,128,0.1);
 }
 
 .tb-progress-overlay {

@@ -174,6 +174,9 @@
   <data name="data-source" xml:space="preserve">
     <value>Datakälla</value>
   </data>
+  <data name="date-format" xml:space="preserve">
+    <value />
+  </data>
   <data name="default-chart-type" xml:space="preserve">
     <value>Diagramtyp</value>
   </data>

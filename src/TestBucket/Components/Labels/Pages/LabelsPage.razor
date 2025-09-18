@@ -10,6 +10,7 @@
 @inject LabelController controller
 @inject AppNavigationManager appNavigationManager
 @inject AuthenticationStateProvider authenticationStateProvider 
+@inject IStringLocalizer<ProjectStrings> projectLoc
 @inject IStringLocalizer<IssueStrings> issueLoc
 @inject IStringLocalizer<FieldStrings> fieldLoc
 @inject IStringLocalizer<SharedStrings> loc
@@ -112,6 +113,16 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
+
+	<PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
+		<Authorized>
+			@if (ManageProjectIntegrationsUrl is not null)
+			{
+				<FieldLink Icon="@TbIcons.Filled.Extensions" Href="@ManageProjectIntegrationsUrl" HeaderText="@projectLoc["integrations"]" Description="@projectLoc["integrations-description"]" />
+			}
+		</Authorized>
+	</PermissionView>
+
 </MudStack>
 
 @code {
@@ -119,10 +130,11 @@
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public UserPreferences? UserPreferences { get; set; }
+
+	public string? ManageProjectIntegrationsUrl => Project is null ? null : $"/{TenantId}/Settings/Projects/{Project.Slug}/Integrations";
+
     private TestProject? _project;
-
     private IReadOnlyList<Label> _labels = [];
-
     private List<BreadcrumbItem> _nav = [];
 
     protected override void OnInitialized()

@@ -226,6 +226,13 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket\Components\Shared\Fields\Api\FieldApiController.cs
+  Files:
+    display: 
+    description: Handling of attachments and file-resources
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Files\**\*.*
   Files UI:
     display: 
     description: File upload UI, attachments, file viewers
@@ -435,7 +442,7 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\States\**\*.*
-  Tenants:
+  Tenant:
     display: 
     description: Creation, deletion, and admin of tenants to allow isolation for other entities in the database.
     dev_lead: jerker.olofsson@hotmail.com
@@ -453,6 +460,20 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\TestAccounts\**\*
+  Test Formats:
+    display: 
+    description: >-
+      Serialization and de-serialization of test results from files, including
+
+      - junit xml
+
+      - xunit xml
+
+      - CTRF
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\Package\Reporting\TestBucket.Formats\**\*
   Testing:
     display: 
     description: Handling of test cases, test suites, test runs
@@ -490,20 +511,6 @@ components:
     test_lead: 
     paths:
     - src\TestBucket.Domain\TestResources\**\*.*
-  Test Result Formats:
-    display: 
-    description: >-
-      Serialization and de-serialization of test results from files, including
-
-      - junit xml
-
-      - xunit xml
-
-      - CTRF
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\Package\Reporting\TestBucket.Formats\**\*
   Traits:
     display: 
     description: Handling of test traits (and other related metadata) in automated testing
@@ -728,6 +735,7 @@ features:
     paths:
     - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
     - src\TestBucket\Components\Code\Controls\**\*CodeCoverage*
+    - src\TestBucket.Domain\Code\Features\CodeCoverage\**\*.*
   Conventional Commits:
     display: 
     description: >
@@ -849,6 +857,7 @@ features:
     - src\runner\TestBucket.Runner\Runners\Http\**\*
     - src\runner\TestBucket.Runner\Registration\**\*
     - src\runner\TestBucket.Runner\Poller\**\*
+    - src\TestBucket.Domain\Automation\Hybrid\**\*
   Import Test Results:
     display: 
     description: >

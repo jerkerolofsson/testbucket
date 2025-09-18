@@ -13,12 +13,13 @@ namespace TestBucket.Domain.UnitTests.Requirements.Import
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Feature("Backup")]
+    [Component("Requirements")]
     public class RequirementImporterTests
     {
         /// <summary>
         /// Verifies that importing a backup file results in a non-empty specification collection.
         /// </summary>
-        [Feature("Backup")]
         [Fact]
         public async Task ImportFileAsync_WithBackupFile_SpecificationImported()
         {

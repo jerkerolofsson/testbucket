@@ -20,6 +20,10 @@ namespace TestBucket.Domain.UnitTests.TestResources;
 /// Verifies the behavior of adding, updating, and removing MCP server registrations
 /// based on test resource notifications.
 /// </summary>
+[EnrichedTest]
+[UnitTest]
+[FunctionalTest]
+[Component("Test Resources")]
 public class AddRemoveMcpServerForTestResourceTests
 {
     private readonly IMcpServerManager _mcpServerManagerMock;

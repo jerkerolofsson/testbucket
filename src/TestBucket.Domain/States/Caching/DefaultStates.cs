@@ -22,7 +22,7 @@ public class DefaultStates
                     Name = TestCaseStates.Draft,
                     MappedState = MappedTestState.Draft,
                     IsInitial = true,
-                    Color = "#ADFF2F",  // greenyellow
+                    Color = "#ADFF2F",
                     AllowedStates = [TestCaseStates.Ongoing, TestCaseStates.Completed]
                 },
                 new()
@@ -40,7 +40,7 @@ public class DefaultStates
                 },
                 new() 
                 {
-                    Color = "#800080", // purple
+                    Color = "#6200ee",
                     Name = TestCaseStates.Completed, 
                     MappedState = MappedTestState.Completed, 
                     IsFinal = true, 
@@ -61,7 +61,7 @@ public class DefaultStates
                     Name = TestCaseRunStates.NotStarted,
                     MappedState = MappedTestState.NotStarted,
                     IsInitial = true,
-                    Color = "greenyellow",
+                    Color = "#ADFF2F",
                     AllowedStates = [TestCaseRunStates.Assigned, TestCaseRunStates.Ongoing, TestCaseRunStates.Completed]
                 },
                 new() 
@@ -117,7 +117,7 @@ public class DefaultStates
                     Name = RequirementStates.Draft, 
                     MappedState = MappedRequirementState.Draft, 
                     IsInitial = true,
-                    Color = "greenyellow",
+                    Color = "#ADFF2F",
                     AllowedStates =
                     [
                         RequirementStates.Accepted,
@@ -126,7 +126,8 @@ public class DefaultStates
                         RequirementStates.Completed,
                         RequirementStates.Delivered,
                         RequirementStates.Canceled
-                    ] 
+                    ] ,
+                    Aliases = ["New", "To Do", "Design"]
                 },
                 new() 
                 { 
@@ -166,7 +167,8 @@ public class DefaultStates
                         RequirementStates.Completed,
                         RequirementStates.Delivered,
                         RequirementStates.Canceled
-                    ]  
+                    ],
+                    Aliases = ["In-Progress", "In Progress"]
                 },
                 new() 
                 { 
@@ -184,6 +186,7 @@ public class DefaultStates
                 new() 
                 { 
                     Name = RequirementStates.Completed,
+                    Color = "#6200ee",
                     MappedState = MappedRequirementState.Completed, 
                     IsFinal = true, 
                     AllowedStates =
@@ -191,13 +194,16 @@ public class DefaultStates
                         RequirementStates.Assigned,
                         RequirementStates.InProgress,
                         RequirementStates.Canceled
-                    ]  
+                    ],
+                    Aliases = ["Done", "Closed"]
                 },
                 new() 
                 { 
                     Name = RequirementStates.Canceled, 
                     MappedState = MappedRequirementState.Canceled, 
-                    AllowedStates = [] 
+                    AllowedStates = [],
+                    Aliases = ["Rejected"],
+                    Color = "#EF476F"
                 },
             ];
     }
@@ -214,12 +220,13 @@ public class DefaultStates
                     Name = IssueStates.Open, 
                     MappedState = MappedIssueState.Open, 
                     IsInitial = true,
-                    Color = "greenyellow",
+                    Color = "#ADFF2F",
                     AllowedStates =
                     [
                         IssueStates.Triage,
                         IssueStates.Closed
-                    ]
+                    ],
+                    Aliases = ["New", "To do"]
                 },
                 new() 
                 { 
@@ -260,7 +267,8 @@ public class DefaultStates
                         IssueStates.Assigned,
                         IssueStates.InProgress,
                         IssueStates.Closed
-                    ]
+                    ],
+                    Aliases = ["In Progress", "In-Progress", "Ongoing"]
                 },
                 new() 
                 { 
@@ -271,7 +279,8 @@ public class DefaultStates
                         IssueStates.Assigned,
                         IssueStates.Reviewed,
                         IssueStates.Closed
-                    ]
+                    ],
+                    Aliases = ["Reviewing"]
                 },
                 new() 
                 { 
@@ -287,10 +296,11 @@ public class DefaultStates
                 new() 
                 { 
                     Name = IssueStates.Closed,
-                    Color = "purple",
+                    Color = "#6200ee",
                     MappedState = MappedIssueState.Closed, 
                     IsFinal = true,
-                    AllowedStates = []
+                    AllowedStates = [],
+                    Aliases = ["Done", "Completed"]
                 },
             ];
     }

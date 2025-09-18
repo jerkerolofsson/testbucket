@@ -28,8 +28,12 @@
 
             <MudNavMenu>
                 <MudNavLink Href="@DashboardUrl">
-                    <MudText>@loc["manage-dashboards"]</MudText>
-                </MudNavLink>
+					<MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+						@loc["manage-dashboards"]
+						<MudSpacer />
+						<MudIcon Size="Size.Small" Icon="@Icons.Material.Filled.ChevronRight" />
+					</MudStack>
+				</MudNavLink>
             </MudNavMenu>
         </MudStack>
 

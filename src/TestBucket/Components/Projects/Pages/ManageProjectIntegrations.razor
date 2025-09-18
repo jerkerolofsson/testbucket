@@ -13,6 +13,7 @@
 @inject IStringLocalizer<ProjectStrings> projectLoc
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IntegrationStrings> intLoc
+@inject IStringLocalizer<SettingStrings> settingsLoc
 
 <TenantRedirect/>
 
@@ -149,11 +150,16 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
+
+	<FieldLink Icon="@TbIcons.Filled.ProcessDiagram" Href="@StatesUrl" HeaderText="@settingsLoc["manage-states"]" Description="@intLoc["manage-states-description"]" />
 </MudStack>
 
 @code {
     [Parameter] public string? TenantId { get; set; }
     [Parameter] public string? ProjectSlug { get; set; }
+
+	    private string StatesUrl => $"{TenantId}/Settings/ManageStates";
+
 
     private string? _projectSlug;
 

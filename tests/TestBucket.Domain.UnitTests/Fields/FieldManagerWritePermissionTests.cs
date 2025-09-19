@@ -2,6 +2,8 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Quartz;
+
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
@@ -38,6 +40,7 @@ public class FieldManagerWritePermissionTests
         services.AddScoped<IFieldManager, FieldManager>();
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
         services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
+        services.AddSingleton<ISchedulerFactory>(NSubstitute.Substitute.For<ISchedulerFactory>());
         _fieldManager = services.BuildServiceProvider().GetRequiredService<IFieldManager>();
     }
 

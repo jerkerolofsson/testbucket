@@ -7,6 +7,7 @@ using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Code.CodeCoverage.Import;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Files;
+using TestBucket.Domain.Jobs;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Components.Code.CodeCoverage.Commands;
@@ -66,10 +67,10 @@ internal class ImportCodeCoverageCommand : ICommand
         var scheduler = await _scheduler.GetScheduler();
         var jobData = new JobDataMap
         {
-            { "ResourceId", file.Id.ToString() },
-            { "TenantId", file.TenantId },
-            { "Email", principal.Identity?.Name ?? "system" }
+            { "ResourceId", file.Id.ToString() }
         };
+        jobData.AddUser(principal);
+
         await scheduler.TriggerJob(new JobKey(nameof(ImportCodeCoverageResourceJob)), jobData);
     }
 }

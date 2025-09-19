@@ -1,11 +1,18 @@
-﻿using Mediator;
+﻿using System.Text.Json;
+
+using Mediator;
 
 using Microsoft.Extensions.Caching.Memory;
 
+using Quartz;
+
 using TestBucket.Contracts.Fields;
+using TestBucket.Domain.Code.CodeCoverage.Import;
 using TestBucket.Domain.Fields.Events;
 using TestBucket.Domain.Fields.Helpers;
+using TestBucket.Domain.Fields.Jobs;
 using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Jobs;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Traits.Core;
@@ -19,6 +26,7 @@ internal class FieldManager : IFieldManager
     private readonly IFieldRepository _repository;
     private readonly IMediator _mediator;
     private readonly IMemoryCache _memoryCache;
+    private readonly ISchedulerFactory _scheduler;
 
     /// <summary>
     /// Constructs a new instance of the FieldManager class.
@@ -26,11 +34,12 @@ internal class FieldManager : IFieldManager
     /// <param name="repository">The repository for accessing field data.</param>
     /// <param name="mediator">The mediator for handling events and requests.</param>
     /// <param name="memoryCache">The memory cache for caching field data.</param>
-    public FieldManager(IFieldRepository repository, IMediator mediator, IMemoryCache memoryCache)
+    public FieldManager(IFieldRepository repository, IMediator mediator, IMemoryCache memoryCache, ISchedulerFactory scheduler)
     {
         _repository = repository;
         _mediator = mediator;
         _memoryCache = memoryCache;
+        _scheduler = scheduler;
     }
 
     /// <summary>
@@ -382,17 +391,29 @@ internal class FieldManager : IFieldManager
     /// <param name="field">The test run field to upsert.</param>
     public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
     {
-        _memoryCache.Remove(GetCacheKey(field)); // Clear cache for this field  
-
+        ArgumentNullException.ThrowIfNull(principal);
+        ArgumentNullException.ThrowIfNull(field);
+        var userName = principal.Identity?.Name ?? throw new UnauthorizedAccessException("No identity name");
 
         var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
         principal.ThrowIfNoPermission(fieldDefinition);
-
         field.TenantId = principal.GetTenantIdOrThrow();
+
+        _memoryCache.Remove(GetCacheKey(field)); // Clear cache for this field  
         await _repository.UpsertTestRunFieldAsync(field);
 
-        await _mediator.Publish(new TestRunFieldChangedNotification(principal, field));
+        var scheduler = await _scheduler.GetScheduler();
+        var jobData = new JobDataMap
+        {
+            { "FieldType", nameof(TestRunField) }
+        };
+        jobData.AddUser(principal);
+        jobData.AddAsJson("TestRunField", field);
+        await scheduler.TriggerJob(new JobKey(nameof(FieldChangedJob)), jobData);
+
+        //await _mediator.Publish(new TestRunFieldChangedNotification(principal, field));
     }
+
     /// <summary>
     /// Upserts a test case field and publishes a notification.
     /// </summary>

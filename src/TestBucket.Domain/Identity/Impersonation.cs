@@ -17,12 +17,18 @@ namespace TestBucket.Domain.Identity
     /// </summary>
     public class Impersonation
     {
-        public static ClaimsPrincipal Impersonate(string? tenantId, long? projectId = null)
+        /// <summary>
+        /// This is used by testing..
+        /// </summary>
+        private const string _defaultImpersonationEmail = "admin@admin.com";
+
+        public static ClaimsPrincipal ImpersonateUserWithFullAccess(string? tenantId, string? userName, long? projectId = null)
         {
+            userName ??= _defaultImpersonationEmail;
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, "system"),
-                new Claim(ClaimTypes.Email, "admin@admin.com"),
+                new Claim(ClaimTypes.Name, userName),
+                new Claim(ClaimTypes.Email, userName),
                 new Claim("tenant", tenantId ?? throw new Exception("No tenant"))
             };
 
@@ -38,6 +44,10 @@ namespace TestBucket.Domain.Identity
 
             return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
         }
+        public static ClaimsPrincipal Impersonate(string? tenantId, long? projectId = null)
+        {
+            return ImpersonateUserWithFullAccess(tenantId, _defaultImpersonationEmail, projectId);
+        }
 
         public static ClaimsPrincipal ChangeProject(ClaimsPrincipal user, long projectId)
         {
@@ -47,10 +57,8 @@ namespace TestBucket.Domain.Identity
             var claims = new List<Claim>(user.Claims.Where(x=>x.Type != "project"));
             claims.Add(new Claim("project", projectId.ToString()));
 
-
             return new ClaimsPrincipal([new ClaimsIdentity(claims, user.Identity?.AuthenticationType)]);
         }
-
 
         public static ClaimsPrincipal Impersonate(Action<EntityPermissionBuilder> configure)
         {
@@ -74,8 +82,6 @@ namespace TestBucket.Domain.Identity
             }
 
             claims.Add(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
-          
-
             return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
         }
     }

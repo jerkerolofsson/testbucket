@@ -6,6 +6,7 @@ using TestBucket.CodeCoverage;
 using TestBucket.Domain.Code.CodeCoverage.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.IntegrationEvents;
+using TestBucket.Domain.Jobs;
 
 namespace TestBucket.Domain.Code.CodeCoverage.Import;
 
@@ -38,10 +39,9 @@ internal class AutoImportCodeCoverageWhenFileAdded : INotificationHandler<FileRe
                 var scheduler = await _scheduler.GetScheduler();
                 var jobData = new JobDataMap
                 {
-                    { "ResourceId", file.Id.ToString() },
-                    { "TenantId", file.TenantId },
-                    { "Email", principal.Identity?.Name ?? "system" }
+                    { "ResourceId", file.Id.ToString() }
                 };
+                jobData.AddUser(principal);
                 await scheduler.TriggerJob(new JobKey(nameof(ImportCodeCoverageResourceJob)), jobData);
             }
         }

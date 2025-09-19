@@ -82,6 +82,7 @@ using TestBucket.Domain.AI.Mcp.Extensions;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Code.CodeCoverage;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Fields.Jobs;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Identity;
 using TestBucket.Localization;
@@ -240,6 +241,7 @@ public static class TestBucketServerApp
         builder.Services.AddQuartz(q =>
         {
             q.AddCodeCoverageJobs();
+            q.AddFieldJobs();
 
             q.UsePersistentStore(c =>
             {

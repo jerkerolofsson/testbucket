@@ -2,6 +2,8 @@
 
 using Microsoft.Extensions.Caching.Memory;
 
+using Quartz;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
@@ -21,6 +23,7 @@ namespace TestBucket.Domain.UnitTests.Fields;
 public class FieldManagerTests
 {
     private readonly IMediator _mediator = NSubstitute.Substitute.For<IMediator>();
+    private readonly ISchedulerFactory _schedulerFactory = NSubstitute.Substitute.For<ISchedulerFactory>();
     private readonly IMemoryCache _memoryCache = NSubstitute.Substitute.For<IMemoryCache>();
     private const string _tenantId = "tenant-1";    
 
@@ -33,7 +36,7 @@ public class FieldManagerTests
     public async Task GetIssueFieldsAsync_ShouldReturnFieldsWithDefaults()
     {
         var repo = new FakeFieldRepository();
-        var fieldManager = new FieldManager(repo, _mediator, _memoryCache);
+        var fieldManager = new FieldManager(repo, _mediator, _memoryCache, _schedulerFactory);
         var fieldDefinitionManager = new FieldDefinitionManager(_memoryCache, [], repo);
 
         // Arrange
@@ -64,7 +67,7 @@ public class FieldManagerTests
     {
         // Arrange
         var repo = new FakeFieldRepository();
-        var fieldManager = new FieldManager(repo, _mediator, _memoryCache);
+        var fieldManager = new FieldManager(repo, _mediator, _memoryCache, _schedulerFactory);
         var principal = Impersonation.Impersonate(_tenantId);
         var fieldDefinition = new FieldDefinition
         {

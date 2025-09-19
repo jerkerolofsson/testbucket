@@ -50,7 +50,7 @@ public class DownloadFileResourceCommand : ICommand
         principal.ThrowIfNoPermission(file);
 
         string url = $"/api/resources/{file.Id}";
-        _appNav.NavigateTo(url);
+        _appNav.NavigateTo(url, true);
         return ValueTask.CompletedTask;
     }
 }

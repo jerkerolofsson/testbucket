@@ -46,7 +46,7 @@ public abstract class UserJob : IJob
 
     }
 
-    private static ClaimsPrincipal GetUser(JobDataMap map)
+    public static ClaimsPrincipal GetUser(JobDataMap map)
     {
         var tenantId = map.GetString(UserJob.KEY_TENANT_ID);
         if (tenantId is null)

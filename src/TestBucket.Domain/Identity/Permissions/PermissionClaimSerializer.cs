@@ -61,6 +61,10 @@ namespace TestBucket.Domain.Identity.Permissions
                 if (bytes.Length > index)
                 {
                     var level = (PermissionLevel)bytes[index];
+                    if(level != 0)
+                    {
+
+                    }
                     userPermissions.Permisssions.Add(new EntityPermission(entityType, level));
                 }
                 else
@@ -76,10 +80,17 @@ namespace TestBucket.Domain.Identity.Permissions
         {
             var sb = new StringBuilder();
 
+            int index = 0;
             foreach(var entityType in _types)
             {
                 var permission = userPermsission.Permisssions.Where(x => x.EntityType == entityType).FirstOrDefault();
                 var level = (int)(permission?.Level ?? PermissionLevel.None);
+
+                if(level != 0)
+                {
+
+                }
+                index++;
 
                 // Convert to hex
                 if(level > 255)

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
+using TestBucket.Domain.Identity.Permissions.Models;
 using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Identity
@@ -21,6 +22,35 @@ namespace TestBucket.Domain.Identity
         /// This is used by testing..
         /// </summary>
         private const string _defaultImpersonationEmail = "admin@admin.com";
+
+        /// <summary>
+        /// Creates a ClaimsPrincipal with the specified permissions
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <param name="userName"></param>
+        /// <param name="permissions"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static ClaimsPrincipal ImpersonateUser(string? tenantId, string? userName, UserPermissions permissions)
+        {
+            userName ??= _defaultImpersonationEmail;
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, userName),
+                new Claim(ClaimTypes.Email, userName),
+                new Claim("tenant", tenantId ?? throw new Exception("No tenant"))
+            };
+
+            // Permissions
+            var builder = new EntityPermissionBuilder();
+            foreach(var permission in permissions.Permisssions)
+            {
+                builder.Add(permission.EntityType, permission.Level);
+            }
+            claims.Add(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
+
+            return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
+        }
 
         public static ClaimsPrincipal ImpersonateUserWithFullAccess(string? tenantId, string? userName, long? projectId = null)
         {

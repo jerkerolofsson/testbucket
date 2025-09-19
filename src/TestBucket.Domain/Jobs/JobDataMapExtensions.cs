@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using Quartz;
 
+using TestBucket.Domain.Identity.Permissions.Models;
+
 namespace TestBucket.Domain.Jobs;
 
 /// <summary>
@@ -23,8 +25,15 @@ public static class JobDataMapExtensions
     public static JobDataMap AddUser(this JobDataMap map, ClaimsPrincipal principal)
     {
         var tenantId = principal.GetTenantIdOrThrow();
-        map.Add("UserName", principal.Identity?.Name ?? "system");
-        map.Add("TenantId", tenantId);
+        map.Add(UserJob.KEY_USERNAME, principal.Identity?.Name ?? "system");
+        map.Add(UserJob.KEY_TENANT_ID, tenantId);
+
+        foreach(var claim in principal.Claims.Where(x=>x.Type == PermissionClaims.Permissions))
+        {
+            map.Add(UserJob.KEY_PERMSISSIONS, claim.Value);
+            break;
+        }
+
         return map;
     }
 

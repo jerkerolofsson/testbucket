@@ -12,7 +12,7 @@ namespace TestBucket.Domain.Automation.Runners
     {
         Task AddAsync(Runner runner);
         Task<IReadOnlyList<Runner>> GetAllAsync(string tenantId);
-        Task<Runner?> GetByIdAsync(string id);
+        Task<Runner?> GetByIdAsync(string tenantId, string id);
         Task UpdateAsync(Runner runner);
         Task DeleteAsync(Runner runner);
     }

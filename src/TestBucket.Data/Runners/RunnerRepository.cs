@@ -34,10 +34,10 @@ namespace TestBucket.Data.Runners
             return await dbContext.Runners.AsNoTracking().Where(x => x.TenantId == tenantId).ToListAsync();
         }
 
-        public async Task<Runner?> GetByIdAsync(string id)
+        public async Task<Runner?> GetByIdAsync(string tenantId, string id)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            return await dbContext.Runners.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await dbContext.Runners.AsNoTracking().Where(x => x.Id == id && x.TenantId == tenantId).FirstOrDefaultAsync();
         }
 
         public async Task UpdateAsync(Runner runner)

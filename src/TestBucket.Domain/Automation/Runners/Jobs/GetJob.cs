@@ -47,7 +47,7 @@ namespace TestBucket.Domain.Automation.Runners.Jobs
                 return new GetJobResponse(null);
             }
 
-            var runner = await _runnerRepository.GetByIdAsync(request.RunnerId);
+            var runner = await _runnerRepository.GetByIdAsync(tenantId, request.RunnerId);
             if (runner is null || runner.Languages is null || runner.Languages.Length == 0)
             {
                 if (runner is not null)

@@ -134,7 +134,9 @@ internal static class PipelineMapper
                         Created =  DateTimeOffset.UtcNow,
                         Modified = DateTimeOffset.UtcNow,
                         HasArtifacts = srcJob.HasArtifacts,
+                        Status = srcJob.Status,
                     };
+                    srcJob.CopyTo(destJob);
                     dest.PipelineJobs.Add(destJob);
                 }
                 else

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Automation.Runners.Models;
@@ -13,11 +7,11 @@ namespace TestBucket.Domain.Automation.Runners.Registration
 {
     public class UpdateRunnerWhenConnected : INotificationHandler<RunnerConnectedEvent>
     {
-        private readonly IRunnerRepository _runnerRepository;
+        private readonly IRunnerManager _runnerManager;
 
-        public UpdateRunnerWhenConnected(IRunnerRepository runnerRepository)
+        public UpdateRunnerWhenConnected(IRunnerManager manager)
         {
-            _runnerRepository = runnerRepository;
+            _runnerManager = manager;
         }
 
         public async ValueTask Handle(RunnerConnectedEvent notification, CancellationToken cancellationToken)
@@ -27,16 +21,12 @@ namespace TestBucket.Domain.Automation.Runners.Registration
             var validator = new PrincipalValidator(principal);
             var projectId = validator.GetProjectId();
 
-            Runner? runner = await _runnerRepository.GetByIdAsync(notification.Request.Id);
+            Runner? runner = await _runnerManager.GetByIdAsync(principal, notification.Request.Id);
 
             if (runner is null)
             {
                 runner = new Runner()
                 {
-                    Created = DateTime.UtcNow,
-                    Modified = DateTime.UtcNow,
-                    CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated"),
-                    ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated"),
                     Id = notification.Request.Id,
                     Name = notification.Request.Name,
                     PublicBaseUrl = notification.Request.PublicBaseUrl,
@@ -46,7 +36,7 @@ namespace TestBucket.Domain.Automation.Runners.Registration
                     Languages = notification.Request.Languages
                 };
 
-                await _runnerRepository.AddAsync(runner);
+                await _runnerManager.AddAsync(principal, runner);
             }
             else
             {
@@ -112,9 +102,7 @@ namespace TestBucket.Domain.Automation.Runners.Registration
                 }
                 if (changed)
                 {
-                    runner.Modified = DateTime.UtcNow;
-                    runner.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
-                    await _runnerRepository.UpdateAsync(runner);
+                    await _runnerManager.UpdateAsync(principal, runner);
                 }
             }
         }

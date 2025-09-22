@@ -43,11 +43,19 @@ namespace TestBucket.Domain.Settings
                 setting.Metadata.Section.Name = _localization.Settings[setting.Metadata.Section.Name] ?? setting.Metadata.Section.Name;
 
                 setting.Metadata.Label ??= setting.Metadata.Name;
-                setting.Metadata.Name = _localization.Settings[setting.Metadata.Label] ?? setting.Metadata.Label;
+
+                var localizedName = _localization.Settings[setting.Metadata.Label];
+                if(!string.IsNullOrEmpty(localizedName))
+                {
+                    setting.Metadata.Name = localizedName;
+                }
                 if (setting.Metadata.Description is not null)
                 {
-                    setting.Metadata.Description = _localization.Settings[setting.Metadata.Description]
-                        ?? setting.Metadata.Description;
+                    var localizedDescription = _localization.Settings[setting.Metadata.Description];
+                    if (!string.IsNullOrEmpty(localizedDescription.Value))
+                    {
+                        setting.Metadata.Description = localizedDescription;
+                    }
                 }
             }
         }

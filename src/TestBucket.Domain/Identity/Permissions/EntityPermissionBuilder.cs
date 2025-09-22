@@ -41,6 +41,7 @@ namespace TestBucket.Domain.Identity.Permissions
             Add(PermissionEntityType.TestResource, PermissionLevel.All);
             Add(PermissionEntityType.Project, PermissionLevel.All);
             Add(PermissionEntityType.User, PermissionLevel.All);
+            Add(PermissionEntityType.Runner, PermissionLevel.All);
             Add(PermissionEntityType.Team, PermissionLevel.All);
             Add(PermissionEntityType.Tenant, PermissionLevel.All);
             Add(PermissionEntityType.Requirement, PermissionLevel.All);

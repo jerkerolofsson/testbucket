@@ -6,17 +6,24 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+using TestBucket.CodeCoverage.CSharp;
 using TestBucket.CodeCoverage.Models;
 
 namespace TestBucket.CodeCoverage.Parsers;
 public class CoberturaParser : ParserBase
 {
     private static readonly Regex LambdaMethodNameRegex = new Regex("<.+>.+__", RegexOptions.Compiled);
-    private static readonly Regex CompilerGeneratedMethodNameRegex = new Regex(@"(?<ClassName>.+)(/|\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext\(\)$", RegexOptions.Compiled);
+    private static readonly Regex CompilerGeneratedMethodNameRegex1 = new Regex(@"(?<ClassName>.+)(/|\.)<\<+(?<CompilerGeneratedName>.+)>.+__.+MoveNext\(\)$", RegexOptions.Compiled);
+    private static readonly Regex CompilerGeneratedMethodNameRegex2 = new Regex(@"(?<ClassName>.+)(/|\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext\(\)$", RegexOptions.Compiled);
     private static readonly Regex LocalFunctionMethodNameRegex = new Regex(@"^.*(?<ParentMethodName><.+>).*__(?<NestedMethodName>[^\|]+)\|.*$", RegexOptions.Compiled);
 
-    private static string ExtractMethodName(string methodName, string className)
+    internal static string ExtractMethodName(string methodName, string className)
     {
+        if(methodName.Contains("GetOptions") && className.Contains("FieldDefinitionMan"))
+        {
+
+        }
+
         if (methodName.Contains("|") || className.Contains("|"))
         {
             Match match = LocalFunctionMethodNameRegex.Match(className + methodName);
@@ -28,12 +35,28 @@ public class CoberturaParser : ParserBase
         }
         else if (methodName.EndsWith("MoveNext()"))
         {
-            Match match = CompilerGeneratedMethodNameRegex.Match(className + methodName);
-
+            Match match = CompilerGeneratedMethodNameRegex1.Match(className + methodName);
             if (match.Success)
             {
-                methodName = match.Groups["CompilerGeneratedName"].Value + "()";
+                var methodNameFromMatch = match.Groups["CompilerGeneratedName"].Value;
+                methodName = methodNameFromMatch + "()";
             }
+            else
+            {
+                Match match2 = CompilerGeneratedMethodNameRegex2.Match(className + methodName);
+                if (match2.Success)
+                {
+                    var methodNameFromMatch = match2.Groups["CompilerGeneratedName"].Value;
+                    methodName = methodNameFromMatch + "()";
+                }
+            }
+        }
+
+        methodName = CSharpCleanup.CleanupMethodName(methodName);
+
+        if(methodName.StartsWith('<'))
+        {
+
         }
 
         return methodName;

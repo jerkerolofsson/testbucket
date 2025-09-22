@@ -109,8 +109,11 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotEmpty(classes);
             var domainServiceExtensions = classes.First(x => x.GetName() == "Microsoft.Extensions.DependencyInjection.DomainServiceExtensions");
             var methods = domainServiceExtensions.GetChildren();
-            Assert.Single(methods);
-            Assert.Equal("AddDomainServices", methods.First().GetName());
+            Assert.Equal(2, methods.Count);
+            foreach (var method in methods)
+            {
+                Assert.Equal("AddDomainServices", method.GetName());
+            }
         }
 
         /// <summary>
@@ -132,11 +135,14 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotEmpty(classes);
             var domainServiceExtensions = classes.First(x => x.GetName() == "Microsoft.Extensions.DependencyInjection.DomainServiceExtensions");
             var methods = domainServiceExtensions.GetChildren();
-            Assert.Single(methods);
-            var method = methods.First();
-            var lines = method.GetChildren();
-            Assert.NotEmpty(lines);
-            Assert.True(lines[0] is CodeCoverageLine);
+            
+            Assert.Equal(2, methods.Count);
+            foreach (var method in methods)
+            {
+                var lines = method.GetChildren();
+                Assert.NotEmpty(lines);
+                Assert.True(lines[0] is CodeCoverageLine);
+            }
         }
 
         /// <summary>
@@ -151,7 +157,7 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
 
             Assert.NotEmpty(report.Packages);
             var percent = report.CoveragePercent.Value;
-            Assert.InRange(percent, 22.34, 22.36);
+            Assert.InRange(percent, 22.20, 22.30);
         }
 
         /// <summary>
@@ -167,7 +173,7 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotEmpty(report.Packages);
             var domainLineCount = report.LineCount.Value;
             var percent = report.CoveragePercent.Value;
-            Assert.Equal(16012, domainLineCount);
+            Assert.Equal(16097, domainLineCount);
         }
 
         /// <summary>

@@ -241,15 +241,10 @@ namespace TestBucket.Domain.Fields
             var cacheKey = GetCacheKey(tenantId);
             _memoryCache.Remove(cacheKey);
         }
-        private static string GetCacheKey(ClaimsPrincipal principal)
-        {
-            return GetCacheKey(principal.GetTenantIdOrThrow());
-        }
 
         private static string GetCacheKey(string tenantId)
         {
             return "fielddefinitions:" + tenantId;
         }
-
     }
 }

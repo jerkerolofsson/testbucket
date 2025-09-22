@@ -1169,4 +1169,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="testsuite-ci-cd-workflow-description" xml:space="preserve">
     <value>Workflow to use when starting a new automation test</value>
   </data>
+  <data name="add-default-milestone-to-imported-run" xml:space="preserve">
+    <value>Add default milestone to imported test runs</value>
+  </data>
+  <data name="add-default-milestone-to-imported-run-description" xml:space="preserve">
+    <value>Adds the current open milestone to imported test runs unless a test run is explicitly set on the run. Only </value>
+  </data>
 </root>

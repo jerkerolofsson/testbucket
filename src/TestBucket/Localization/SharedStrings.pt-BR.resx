@@ -1170,4 +1170,10 @@ As variáveis são definidas em um caso de teste como {{key}} e ao executar um c
   <data name="testsuite-ci-cd-workflow-description" xml:space="preserve">
     <value />
   </data>
+  <data name="add-default-milestone-to-imported-run" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add-default-milestone-to-imported-run-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

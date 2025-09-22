@@ -68,6 +68,7 @@ using TestBucket.Domain.TestAccounts;
 using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.Testing.Features.DefaultMilestones;
 using TestBucket.Domain.Testing.Heuristics;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Import;
@@ -309,6 +310,7 @@ public static class DomainServiceExtensions
         // Test settings
         services.AddScoped<ISetting, ShowFailureMessageDialogWhenFailingTestCaseRunSetting>();
         services.AddScoped<ISetting, AdvanceToNextNotCompletedTestWhenSettingResultSetting>();
+        services.AddScoped<ISetting, AddDefaultMilestoneToRunSetting>();
 
         services.AddScoped<ITestBucketThemeManager, TestBucketThemeManager>();
 

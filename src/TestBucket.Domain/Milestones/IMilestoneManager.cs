@@ -61,4 +61,12 @@ public interface IMilestoneManager
     /// <param name="milestone">The milestone to delete.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task DeleteAsync(ClaimsPrincipal principal, Milestone milestone);
+
+    /// <summary>
+    /// Returns the current milestone for a project, if one is set.
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    Task<Milestone?> GetCurrentMilestoneAsync(ClaimsPrincipal principal, long projectId);
 }

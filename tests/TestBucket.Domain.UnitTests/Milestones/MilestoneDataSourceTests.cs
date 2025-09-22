@@ -29,7 +29,8 @@ public class MilestoneDataSourceTests
     /// <returns>Tuple containing the data source and manager.</returns>
     private static (MilestoneDataSource, IMilestoneManager) CreateSut() 
     {
-        var manager = new MilestoneManager(new FakeMilestoneRepository());
+        TimeProvider timeProvider = new FakeTimeProvider(new DateTimeOffset(2025, 09, 22, 1, 2, 3, TimeSpan.Zero)); 
+        var manager = new MilestoneManager(new FakeMilestoneRepository(), timeProvider);
         var dataSource = new MilestoneDataSource(manager);
         return (dataSource, manager);
     }

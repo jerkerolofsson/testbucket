@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Contracts.Issues.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues.Models;
@@ -12,10 +13,12 @@ namespace TestBucket.Domain.UnitTests.Milestones
     /// </summary>
     [EnrichedTest]
     [UnitTest]
+    [FunctionalTest]
     [Component("Milestones")]
     public class MilestoneManagerTests
     {
-        private static MilestoneManager CreateSut() => new MilestoneManager(new FakeMilestoneRepository());
+        private static readonly TimeProvider _timeProvider = new FakeTimeProvider(new DateTimeOffset(2025, 09, 22, 1, 2, 3, TimeSpan.Zero));
+        private static MilestoneManager CreateSut() => new MilestoneManager(new FakeMilestoneRepository(), _timeProvider);
         private const int ProjectId = 1;
         private const string TenantId = "tenant-1";
 
@@ -404,6 +407,167 @@ namespace TestBucket.Domain.UnitTests.Milestones
 
             // Act
             var result = await manager.GetMilestoneByExternalIdAsync(principalTenant2, ProjectId, "github", "12345");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetMilestoneByNameAsync"/> retrieves the correct milestone for a valid name.
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        public async Task GetMilestoneByNameAsync_WithValidName_ReturnsMilestone()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithAllPermissions();
+            var milestone = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                Title = "Release 1.0"
+            };
+            await manager.AddMilestoneAsync(principal, milestone);
+
+            // Act
+            var result = await manager.GetMilestoneByNameAsync(principal, ProjectId, "Release 1.0");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Release 1.0", result.Title);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetMilestoneByNameAsync"/> returns null for an invalid name.
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        public async Task GetMilestoneByNameAsync_WithInvalidName_ReturnsNull()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithAllPermissions();
+            var milestone = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                Title = "Release 1.0"
+            };
+            await manager.AddMilestoneAsync(principal, milestone);
+
+            // Act
+            var result = await manager.GetMilestoneByNameAsync(principal, ProjectId, "Nonexistent");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetCurrentMilestoneAsync"/> returns the current milestone for a project.
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        [Feature("Default Milestone")]
+        public async Task GetCurrentMilestoneAsync_WithMultipleMilestonesMatchingTimeButOneIsClosed_ReturnsCurrentMilestone()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithAllPermissions();
+            var milestone1 = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                Title = "Milestone 1",
+                State = MilestoneState.Closed
+            };
+            var milestone2 = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                Title = "Milestone 2",
+                State = MilestoneState.Open
+            };
+            // Mark milestone2 as current (assuming EndDate in future and StartDate in past)
+            milestone1.StartDate = milestone2.StartDate = _timeProvider.GetUtcNow().AddDays(-1);
+            milestone1.EndDate = milestone2.EndDate = _timeProvider.GetUtcNow().AddDays(1);
+
+            await manager.AddMilestoneAsync(principal, milestone1);
+            await manager.AddMilestoneAsync(principal, milestone2);
+
+            // Act
+            var result = await manager.GetCurrentMilestoneAsync(principal, ProjectId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Milestone 2", result.Title);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetCurrentMilestoneAsync"/> returns the current milestone for a project.
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        [Feature("Default Milestone")]
+        public async Task GetCurrentMilestoneAsync_WithCurrentMilestone_ReturnsCurrentMilestone()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithAllPermissions();
+            var milestone1 = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                Title = "Milestone 1",
+                State = MilestoneState.Open
+            };
+            var milestone2 = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                Title = "Milestone 2",
+                State = MilestoneState.Open
+            };
+            // Mark milestone2 as current (assuming EndDate in future and StartDate in past)
+            milestone2.StartDate = _timeProvider.GetUtcNow().AddDays(-1);
+            milestone2.EndDate = _timeProvider.GetUtcNow().AddDays(1);
+
+            await manager.AddMilestoneAsync(principal, milestone1);
+            await manager.AddMilestoneAsync(principal, milestone2);
+
+            // Act
+            var result = await manager.GetCurrentMilestoneAsync(principal, ProjectId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Milestone 2", result.Title);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetCurrentMilestoneAsync"/> returns null if no current milestone exists.
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        [Feature("Default Milestone")]
+        public async Task GetCurrentMilestoneAsync_NoCurrentMilestone_ReturnsNull()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithAllPermissions();
+            var milestone = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                Title = "Milestone 1",
+                State = MilestoneState.Open,
+                StartDate = _timeProvider.GetUtcNow().AddDays(-10),
+                EndDate = _timeProvider.GetUtcNow().AddDays(-5)
+            };
+            await manager.AddMilestoneAsync(principal, milestone);
+
+            // Act
+            var result = await manager.GetCurrentMilestoneAsync(principal, ProjectId);
 
             // Assert
             Assert.Null(result);

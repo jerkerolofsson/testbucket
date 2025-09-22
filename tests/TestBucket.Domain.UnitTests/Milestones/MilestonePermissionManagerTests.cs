@@ -16,7 +16,6 @@ namespace TestBucket.Domain.UnitTests.Milestones
     [SecurityTest]
     public class MilestonePermissionManagerTests
     {
-        private readonly IMilestoneRepository _repository = Substitute.For<IMilestoneRepository>();
         private readonly MilestoneManager _manager;
 
         /// <summary>
@@ -24,7 +23,8 @@ namespace TestBucket.Domain.UnitTests.Milestones
         /// </summary>
         public MilestonePermissionManagerTests()
         {
-            _manager = new MilestoneManager(_repository);
+            TimeProvider timeProvider = new FakeTimeProvider(new DateTimeOffset(2025, 09, 22, 1, 2, 3, TimeSpan.Zero));
+            _manager = new MilestoneManager(new FakeMilestoneRepository(), timeProvider);
         }
 
 

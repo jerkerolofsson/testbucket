@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Security.Principal;
 using System.Text;
 
 using Mediator;
@@ -12,14 +11,16 @@ using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Metrics;
 using TestBucket.Domain.Metrics.Models;
+using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams;
-using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Testing.Features.DefaultMilestones;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
@@ -48,6 +49,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
     private readonly IRequirementManager _requirementManager;
     private readonly IProgressManager _progressManager;
     private readonly IMetricsManager _metricsManager;
+    private readonly IMilestoneManager _milestoneManager;
+    private readonly ISettingsProvider _settingsProvider;
     private readonly ILogger<ImportRunHandler> _logger;
 
     public ImportRunHandler(
@@ -64,7 +67,9 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         IRequirementManager requirementManager,
         ProgressSystemManager progressManager,
         ILogger<ImportRunHandler> logger,
-        IMetricsManager metricsManager)
+        IMetricsManager metricsManager,
+        IMilestoneManager milestoneManager,
+        ISettingsProvider settingsProvider)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
@@ -80,6 +85,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         _progressManager = progressManager;
         _logger = logger;
         _metricsManager = metricsManager;
+        _milestoneManager = milestoneManager;
+        _settingsProvider = settingsProvider;
     }
     public async ValueTask<TestRun> Handle(ImportRunRequest request, CancellationToken cancellationToken)
     {
@@ -325,6 +332,20 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
     private async Task UpdateTestRunFieldsAsync(ClaimsPrincipal principal, TestRun testRun, TestRunDto run, IReadOnlyList<FieldDefinition> testRunFieldDefinitions)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        bool addMilestone = true;
+
+        if (testRun.TestProjectId is not null)
+        {
+            // Check project settings..
+            var preferences = await _settingsProvider.GetDomainSettingsAsync<ImportTestsProjectSettings>(tenantId, testRun.TestProjectId);
+            addMilestone = preferences?.AddDefaultMilestoneFieldToImportedTestRuns ?? false;
+        }
+        else
+        {
+            // If no project, don't add milestone
+            addMilestone = false;
+        }
+
         foreach (var fieldDefinition in testRunFieldDefinitions)
         {
             var field = new TestRunField
@@ -336,8 +357,18 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             var values = run.Traits.Where(x => x.Type == fieldDefinition.TraitType).Select(x => x.Value).ToArray();
             if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
             {
+                if (fieldDefinition.TraitType == TraitType.Milestone)
+                {
+                    addMilestone = false;
+                }
+
                 await _fieldManager.UpsertTestRunFieldAsync(principal, field);
             }
+        }
+
+        if (addMilestone)
+        {
+            await AddDefaultMilestoneToRun.AddAsync(principal, testRun, testRunFieldDefinitions, _milestoneManager, _fieldManager);
         }
     }
 
@@ -365,7 +396,6 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 Open = false,
             };
             await _testRunManager.AddTestRunAsync(principal, testRun);
-
         }
         else
         {

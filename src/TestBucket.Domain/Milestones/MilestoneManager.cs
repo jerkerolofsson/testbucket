@@ -2,14 +2,18 @@
 using TestBucket.Domain.Milestones.Specifications;
 using TestBucket.Domain.Shared.Specifications;
 
+using static System.Net.Mime.MediaTypeNames;
+
 namespace TestBucket.Domain.Milestones;
 internal class MilestoneManager : IMilestoneManager
 {
     private readonly IMilestoneRepository _repository;
+    private readonly TimeProvider _timeProvider;
 
-    public MilestoneManager(IMilestoneRepository repository)
+    public MilestoneManager(IMilestoneRepository repository, TimeProvider timeProvider)
     {
         _repository = repository;
+        _timeProvider = timeProvider;
     }
 
     public async Task UpdateMilestoneAsync(ClaimsPrincipal principal, Milestone milestone)
@@ -91,5 +95,19 @@ internal class MilestoneManager : IMilestoneManager
         principal.ThrowIfEntityTenantIsDifferent(milestone);
 
         await _repository.DeleteMilestoneByIdAsync(milestone.Id);
+    }
+
+    public async Task<Milestone?> GetCurrentMilestoneAsync(ClaimsPrincipal principal, long projectId)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+
+        var filters = new List<FilterSpecification<Milestone>>
+        {
+            new FilterByTenant<Milestone>(principal.GetTenantIdOrThrow()),
+            new FilterByProject<Milestone>(projectId),
+            new FilterMilestonesByCurrent(_timeProvider.GetUtcNow())
+        };
+        var result = await _repository.GetMilestonesAsync(filters);
+        return result.FirstOrDefault();
     }
 }

@@ -15,12 +15,14 @@ internal class ArchitectureManager : IArchitectureManager
     private readonly IArchitectureRepository _repository;
     private readonly ILogger<ArchitectureManager> _logger;
     private readonly IMediator _mediator;
+    private readonly TimeProvider _timeProvider;
 
-    public ArchitectureManager(IArchitectureRepository repository, ILogger<ArchitectureManager> logger, IMediator mediator)
+    public ArchitectureManager(IArchitectureRepository repository, ILogger<ArchitectureManager> logger, IMediator mediator, TimeProvider timeProvider)
     {
         _repository = repository;
         _logger = logger;
         _mediator = mediator;
+        _timeProvider = timeProvider;
     }
 
     #region Systems
@@ -39,6 +41,8 @@ internal class ArchitectureManager : IArchitectureManager
         {
             await GenerateEmbeddingAsync(principal,system);
         }
+        existingItem.Modified = _timeProvider.GetUtcNow();
+        existingItem.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
 
         await _repository.UpdateSystemAsync(system);
     }
@@ -60,6 +64,8 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         system.TenantId = principal.GetTenantIdOrThrow();
+        system.Created = system.Modified = _timeProvider.GetUtcNow();
+        system.CreatedBy = system.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
 
         await GenerateEmbeddingAsync(principal,system);
 
@@ -139,6 +145,9 @@ internal class ArchitectureManager : IArchitectureManager
         {
             await GenerateEmbeddingAsync(principal,layer);
         }
+        layer.Modified = _timeProvider.GetUtcNow();
+        layer.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
+
         await _repository.UpdateLayerAsync(layer);
     }
 
@@ -153,14 +162,17 @@ internal class ArchitectureManager : IArchitectureManager
     /// Adds a layer
     /// </summary>
     /// <param name="principal"></param>
-    /// <param name="component"></param>
+    /// <param name="layer"></param>
     /// <returns></returns>
-    public async Task AddLayerAsync(ClaimsPrincipal principal, ArchitecturalLayer component)
+    public async Task AddLayerAsync(ClaimsPrincipal principal, ArchitecturalLayer layer)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
-        component.TenantId = principal.GetTenantIdOrThrow();
-        await GenerateEmbeddingAsync(principal,component);
-        await _repository.AddLayerAsync(component);
+        layer.TenantId = principal.GetTenantIdOrThrow();
+        layer.Created = layer.Modified = _timeProvider.GetUtcNow();
+        layer.CreatedBy = layer.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
+
+        await GenerateEmbeddingAsync(principal,layer);
+        await _repository.AddLayerAsync(layer);
     }
 
     /// <summary>
@@ -222,6 +234,9 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
+        component.Created = component.Modified = _timeProvider.GetUtcNow();
+        component.CreatedBy = component.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
+
         await GenerateEmbeddingAsync(principal, component);
         await _repository.AddComponentAsync(component);
 
@@ -232,6 +247,9 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
+        component.Modified = _timeProvider.GetUtcNow();
+        component.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
+
         var existingItem = await _repository.GetComponentAsync(component.Id);
         if (existingItem is null)
         {
@@ -351,6 +369,9 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         feature.TenantId = principal.GetTenantIdOrThrow();
+        feature.Created = feature.Modified = _timeProvider.GetUtcNow();
+        feature.CreatedBy = feature.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
+
         await GenerateEmbeddingAsync(principal, feature);
         await _repository.AddFeatureAsync(feature);
 
@@ -544,7 +565,7 @@ internal class ArchitectureManager : IArchitectureManager
             await GenerateEmbeddingAsync(principal, feature);
         }
 
-        feature.Modified = DateTimeOffset.UtcNow;
+        feature.Modified = _timeProvider.GetUtcNow();
         feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
         await _repository.UpdateFeatureAsync(feature);
 
@@ -577,12 +598,11 @@ internal class ArchitectureManager : IArchitectureManager
                     TestProjectId = project.Id,
                     TeamId = project.TeamId,
                     Display = feature.Value.Display,
-                    Created = DateTimeOffset.UtcNow,
-                    Modified = DateTimeOffset.UtcNow,
                     Description = feature.Value.Description,
                     TestLead = feature.Value.TestLead,
                     DevLead = feature.Value.DevLead,
-
+                    Created = _timeProvider.GetUtcNow(),
+                    Modified = _timeProvider.GetUtcNow(),
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
@@ -633,12 +653,12 @@ internal class ArchitectureManager : IArchitectureManager
                     TestProjectId = project.Id,
                     TeamId = project.TeamId,
                     Display = layer.Value.Display,
-                    Created = DateTimeOffset.UtcNow,
-                    Modified = DateTimeOffset.UtcNow,
                     Description = layer.Value.Description,
                     TestLead = layer.Value.TestLead,
                     DevLead = layer.Value.DevLead,
 
+                    Created = _timeProvider.GetUtcNow(),
+                    Modified = _timeProvider.GetUtcNow(),
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
@@ -685,14 +705,14 @@ internal class ArchitectureManager : IArchitectureManager
                     TestProjectId = project.Id,
                     TeamId = project.TeamId,
                     Display = component.Value.Display,
-                    Created = DateTimeOffset.UtcNow,
-                    Modified = DateTimeOffset.UtcNow,
                     Description = component.Value.Description,
                     TestLead = component.Value.TestLead,
                     DevLead = component.Value.DevLead,
 
-                    CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
-                    ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                    Created = _timeProvider.GetUtcNow(),
+                    Modified = _timeProvider.GetUtcNow(),
+                    CreatedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity"),
+                    ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity"),
                 };
                 await GenerateEmbeddingAsync(principal, existingComponent);
                 await _repository.AddComponentAsync(existingComponent);
@@ -740,13 +760,13 @@ internal class ArchitectureManager : IArchitectureManager
                     TestProjectId = project.Id,
                     TeamId = project.TeamId,
                     Display = system.Value.Display,
-                    Created = DateTimeOffset.UtcNow,
-                    Modified = DateTimeOffset.UtcNow,
                     Description = system.Value.Description,
                     TestLead = system.Value.TestLead,
                     DevLead = system.Value.DevLead,
-                    CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
-                    ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                    Created = _timeProvider.GetUtcNow(),
+                    Modified = _timeProvider.GetUtcNow(),
+                    CreatedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity"),
+                    ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity"),
                 };
                 await GenerateEmbeddingAsync(principal, existingSystem);
                 await _repository.AddSystemAsync(existingSystem);
@@ -779,7 +799,7 @@ internal class ArchitectureManager : IArchitectureManager
     {;
         bool hasDescriptionChanged = existingSystem.Description != system.Value.Description;
 
-        existingSystem.Modified = DateTimeOffset.UtcNow;
+        existingSystem.Modified = _timeProvider.GetUtcNow();
         existingSystem.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
 
         existingSystem.GlobPatterns = system.Value.Paths ?? existingSystem.GlobPatterns;
@@ -801,6 +821,4 @@ internal class ArchitectureManager : IArchitectureManager
     {
         await _mediator.Send(new ClearFieldCacheRequest(principal.GetTenantIdOrThrow(), Contracts.Fields.FieldDataSourceType.Components));
     }
-
-
 }

@@ -8,7 +8,7 @@ namespace TestBucket.Domain.UnitTests.Fields
     /// </summary>
     [UnitTest]
     [Component("Fields")]
-    [Feature("Custom Fields")]
+    [Feature("Fields")]
     [EnrichedTest]
     [FunctionalTest]
     public class FieldValueConverterTests

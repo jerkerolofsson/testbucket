@@ -36,11 +36,11 @@ public class ZipImporter : IDataImporterSource
         _zip.Dispose();
     }
 
-    public async Task<T?> DeserializeEntityAsync<T>(Predicate<ExportEntity> filter, CancellationToken cancellationToken) where T : class
-    {
-        var entity = Find(filter);
-        return await DeserializeEntityAsync<T>(entity, cancellationToken).ConfigureAwait(false);
-    }
+    //public async Task<T?> DeserializeEntityAsync<T>(Predicate<ExportEntity> filter, CancellationToken cancellationToken) where T : class
+    //{
+    //    var entity = Find(filter);
+    //    return await DeserializeEntityAsync<T>(entity, cancellationToken).ConfigureAwait(false);
+    //}
 
     public async Task<T?> DeserializeEntityAsync<T>(ExportEntity? entity, CancellationToken cancellationToken) where T : class
     {
@@ -57,17 +57,17 @@ public class ZipImporter : IDataImporterSource
     /// </summary>
     /// <param name="filter"></param>
     /// <returns></returns>
-    public ExportEntity? Find(Predicate<ExportEntity> filter)
-    {
-        foreach(var entity in ReadAll())
-        {
-            if(filter(entity))
-            {
-                return entity;
-            }
-        }
-        return null;
-    }
+    //public ExportEntity? Find(Predicate<ExportEntity> filter)
+    //{
+    //    foreach(var entity in ReadAll())
+    //    {
+    //        if(filter(entity))
+    //        {
+    //            return entity;
+    //        }
+    //    }
+    //    return null;
+    //}
 
     public IEnumerable<ExportEntity> ReadAll()
     {
@@ -80,12 +80,4 @@ public class ZipImporter : IDataImporterSource
             }
         }
     }
-
-    //public async Task WriteEntityAsync(string source, string entityType, string entityId, Stream sourceStream)
-    //{
-    //    string path = $"{source}/{entityType}/{entityId}";
-    //    var entry = _zip.CreateEntry(path);
-    //    using var destinationStream = entry.Open();
-    //    await sourceStream.CopyToAsync(destinationStream);
-    //}
 }

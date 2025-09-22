@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.Export.Events;
 using TestBucket.Domain.Export.Models;
@@ -42,19 +36,30 @@ public class Exporter
                 sink = new Zip.ZipExporter(destinationStream);
                 break;
             default:
-                throw new NotImplementedException($"Format not implemented: {options.ExportFormat}");
+                throw new NotSupportedException($"Format not implemented: {options.ExportFormat}");
         }
 
+        try
+        {
+            await ExportFullAsync(principal, options, tenantId, progressTask, sink);
+        }
+        finally
+        {
+            sink.Dispose();
+        }
+    }
+
+    internal async Task ExportFullAsync(ClaimsPrincipal principal, ExportOptions options, string tenantId, ProgressTask progressTask, IDataExporterSink sink)
+    {
         var tenant = new Tenant
         {
-            Id = tenantId, Name = tenantId
+            Id = tenantId,
+            Name = tenantId
         };
         if (options.Filter(tenant))
         {
             await sink.WriteEntityAsync("exporter", "tenant", tenantId, new MemoryStream(), CancellationToken.None);
         }
         await _mediator.Publish(new ExportNotification(principal, tenantId, options, sink, progressTask));
-
-        sink.Dispose();
     }
 }

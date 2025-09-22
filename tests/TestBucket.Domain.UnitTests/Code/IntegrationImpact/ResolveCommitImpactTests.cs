@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TestBucket.Contracts.Code.Models;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services.IntegrationImpact;
-using TestBucket.Domain.Code.Yaml;
-using TestBucket.Domain.Code.Yaml.Models;
-using TestBucket.Contracts.Code.Models;
 
 namespace TestBucket.Domain.UnitTests.Code.IntegrationImpact
 {
     /// <summary>
     /// Contains unit tests for <see cref="ResolveCommitImpactHandler"/> and related commit impact resolution logic.
     /// </summary>
+    [Component("Code")]
+    //[Feature("Backup")]
     [UnitTest]
     [EnrichedTest]
     public class ResolveCommitImpactTests

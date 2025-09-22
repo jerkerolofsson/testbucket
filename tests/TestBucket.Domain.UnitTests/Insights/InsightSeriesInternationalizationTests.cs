@@ -8,6 +8,9 @@ using TestBucket.Domain.Insights.Model;
 
 namespace TestBucket.Domain.UnitTests.Insights;
 
+/// <summary>
+/// Contains unit tests for verifying the internationalization and formatting of labels in <see cref="InsightsData{TLabel, TValue}"/> series.
+/// </summary>
 [Component("Insights")]
 [Feature("Insights")]
 [UnitTest]
@@ -15,6 +18,9 @@ namespace TestBucket.Domain.UnitTests.Insights;
 [FunctionalTest]
 public class InsightSeriesInternationalizationTests
 {
+    /// <summary>
+    /// Tests that InsightsData{TLabel, TValue}.ConvertToStringLabels correctly formats date labels using the ISO date format ("yyyy-MM-dd").
+    /// </summary>
     [Fact]
     public void ConvertToStringLabels_WithDateFormatIso_CorrectlyFormatsLabels()
     {

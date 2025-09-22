@@ -1163,4 +1163,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="welcome-message" xml:space="preserve">
     <value>Welcome to Test Bucket</value>
   </data>
+  <data name="ci-cd-workflow" xml:space="preserve">
+    <value>Workflow</value>
+  </data>
+  <data name="testsuite-ci-cd-workflow-description" xml:space="preserve">
+    <value>Workflow to use when starting a new automation test</value>
+  </data>
 </root>

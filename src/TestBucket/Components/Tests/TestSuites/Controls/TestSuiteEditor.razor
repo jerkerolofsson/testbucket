@@ -29,11 +29,12 @@
         else
         {
             <Field Row>
-                <MudIcon Icon="@TbIcons.Filled.Infinite"></MudIcon>
-                <div>
-                    <FieldHeader>@loc["ci-cd"]</FieldHeader>
-                    <span>@loc["automation-ci-cd-description"]</span>
-                </div>
+				<FieldHeader Icon="@TbIcons.Filled.Infinite">
+					<div class="tb-fields-name-description-tight">
+						<div>@loc["ci-cd"]</div>
+						<FieldDescription>@loc["automation-ci-cd-description"]</FieldDescription>
+					</div>
+				</FieldHeader>
                 <MudSpacer />
                 <ExternalSystemPicker Project="@_project" Integration="@_integration" IntegrationChanged="OnIntegrationChanged" />
             </Field>
@@ -41,29 +42,36 @@
             @if (_integration is not null)
             {
                 <Field Row>
-                    <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
-                    <div>
-                        <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
-                        <span>@loc["automation-default-ci-cd-ref-description"]</span>
-                    </div>
-                    <MudSpacer />
+					<FieldHeader Icon="@TbIcons.Git.GitBranch">
+						<div class="tb-fields-name-description-tight">
+							<div>@loc["ci-cd-ref"]</div>
+							<FieldDescription>@loc["automation-default-ci-cd-ref-description"]</FieldDescription>
+						</div>
+					</FieldHeader>
+					<MudSpacer />
                     <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
                 </Field>
 
+				@if (_integration.Provider == "GitHub")
+				{
+					<Field Row>
+						<FieldHeader Icon="@TbIcons.Git.GitBranch">
+							<div class="tb-fields-name-description-tight">
+								<div>@loc["ci-cd-workflow"]</div>
+								<FieldDescription>@loc["testsuite-ci-cd-workflow-description"]</FieldDescription>
+							</div>
+						</FieldHeader>
+						<MudSpacer />
+						<MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdWorkflowChanged" Value="@TestSuite.CiCdWorkflow"></MudTextField>
+					</Field>
+				}
                 <Field Row>
-                    <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
-                    <div>
-                        <FieldHeader>@loc["ci-cd-workflow"]</FieldHeader>
-                        <span>@loc["ci-cd-workflow-description"]</span>
-                    </div>
-                    <MudSpacer />
-                    <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdWorkflowChanged" Value="@TestSuite.CiCdWorkflow"></MudTextField>
-                </Field>
-                <Field Row>
-                    <div>
-                        <FieldHeader>@loc["automation-ci-cd-add-outside-pipelines"]</FieldHeader>
-                        <span>@loc["automation-ci-cd-add-outside-pipelines-description"]</span>
-                    </div>
+					<FieldHeader Icon="@TbIcons.BoldDuoTone.Rocket">
+						<div class="tb-fields-name-description-tight">
+							<div>@loc["automation-ci-cd-add-outside-pipelines"]</div>
+							<FieldDescription>@loc["automation-ci-cd-add-outside-pipelines-description"]</FieldDescription>
+						</div>
+					</FieldHeader>
                     <MudSpacer />
                     <MudSwitchM3 Color="Color.Primary" T="bool" ValueChanged="OnAddPipelinesStartedFromOutsideChanged" Value="@_addOutsidePipelines"></MudSwitchM3>
                 </Field>

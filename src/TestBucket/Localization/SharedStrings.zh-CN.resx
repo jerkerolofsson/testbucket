@@ -117,7 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="access-failed-count" xml:space="preserve">
     <value>访问失败计数</value>
   </data>
@@ -323,6 +322,10 @@
   <data name="create-test-run" xml:space="preserve">
     <value>创建运行</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="creating-pipeline" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="dashboard" xml:space="preserve">
     <value>仪表板</value>
   </data>
@@ -334,6 +337,9 @@
   </data>
   <data name="default-reviewers" xml:space="preserve">
     <value>默认审阅者</value>
+  </data>
+  <data name="Defines the runner for automated tests when running within TB." type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="delete" xml:space="preserve">
     <value>删除</value>
@@ -394,6 +400,9 @@
   </data>
   <data name="edit" xml:space="preserve">
     <value>编辑</value>
+  </data>
+  <data name="edit-automation-properties" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="edit-folder" xml:space="preserve">
     <value>编辑文件夹</value>
@@ -745,6 +754,9 @@
   <data name="pipelines" xml:space="preserve">
     <value>管道</value>
   </data>
+  <data name="please-wait" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="post-conditions" xml:space="preserve">
     <value>后条件</value>
   </data>
@@ -870,6 +882,9 @@
   <data name="runner" xml:space="preserve">
     <value>跑步者</value>
   </data>
+  <data name="runner-language" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="runners" xml:space="preserve">
     <value>跑步者</value>
   </data>
@@ -990,6 +1005,9 @@
   </data>
   <data name="test-case" xml:space="preserve">
     <value>测试案例</value>
+  </data>
+  <data name="test-case-external-id-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="test-case-run" xml:space="preserve">
     <value>测试结果</value>
@@ -1146,22 +1164,10 @@
   <data name="welcome-message" xml:space="preserve">
     <value>欢迎来测试水桶</value>
   </data>
-  <data name="creating-pipeline" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>创建管道..</value>
+  <data name="ci-cd-workflow" xml:space="preserve">
+    <value />
   </data>
-  <data name="test-case-external-id-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>测试用例的外部ID用于将导入的自动化结果映射到正确的测试用例</value>
-  </data>
-  <data name="edit-automation-properties" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>编辑自动化属性</value>
-  </data>
-  <data name="please-wait" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>请稍等..</value>
-  </data>
-  <data name="Defines the runner for automated tests when running within TB." type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>跑步者描述</value>
-  </data>
-  <data name="runner-language" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>跑步者语言</value>
+  <data name="testsuite-ci-cd-workflow-description" xml:space="preserve">
+    <value />
   </data>
 </root>

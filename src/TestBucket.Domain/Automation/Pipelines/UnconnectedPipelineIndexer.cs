@@ -47,6 +47,7 @@ public class UnconnectedPipelineIndexer : BackgroundService
             {
                 await foreach (var tenant in tenantRepository.EnumerateAsync(stoppingToken))
                 {
+                    _logger.LogInformation("Searching for unconnected pipelines for {TenantId}..", tenant.Id);
                     await ProcessTenantAsync(scope, tenant, stoppingToken);
                 }
             }

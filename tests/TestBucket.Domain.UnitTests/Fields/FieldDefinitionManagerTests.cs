@@ -14,7 +14,7 @@ namespace TestBucket.Domain.UnitTests.Fields;
 /// <summary>
 /// Unit tests for the <see cref="FieldDefinitionManager"/> class.
 /// </summary>
-[Feature("Custom Fields")]
+[Feature("Fields")]
 [UnitTest]
 [Component("Fields")]
 [EnrichedTest]
@@ -242,5 +242,122 @@ public class FieldDefinitionManagerTests
             x.TenantId = TenantId;
             x.Add(PermissionEntityType.Project, level);
         });
+    }
+
+    /// <summary>
+    /// Tests that field definitions are cached after the first retrieval.
+    /// </summary>
+    [Fact]
+    public async Task GetDefinitionsAsync_ShouldCacheFieldDefinitions()
+    {
+        // Arrange
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var fieldDefinition = new FieldDefinition
+        {
+            Name = "Cached Field",
+            Target = FieldTarget.Issue
+        };
+        var sut = await CreateSutWithMockedCacheAsync(memoryCache, fieldDefinition);
+        var principal = GetUserWithPermissions(PermissionLevel.All);
+
+        // Act
+        var definitions1 = await sut.GetDefinitionsAsync(principal, null, FieldTarget.Issue);
+        var definitions2 = await sut.GetDefinitionsAsync(principal, null, FieldTarget.Issue);
+
+        // Assert
+        Assert.Single(definitions1);
+        Assert.Single(definitions2);
+        Assert.True(ReferenceEquals(definitions1, definitions2) || definitions1.SequenceEqual(definitions2));
+    }
+
+    /// <summary>
+    /// Tests that <see cref="FieldDefinitionManager.GetOptionsAsync"/> returns options defined on the field itself.
+    /// </summary>
+    [Fact]
+    public async Task GetOptionsAsync_ShouldReturnFieldDefinedOptions()
+    {
+        // Arrange
+        var fieldDefinition = new FieldDefinition
+        {
+            Name = "Priority",
+            Target = FieldTarget.Issue,
+            Options = new List<string> { "High", "Medium", "Low" }
+        };
+        var sut = await CreateSutAsync(fieldDefinition);
+        var principal = GetUserWithPermissions(PermissionLevel.All);
+
+        // Act
+        var options = await sut.GetOptionsAsync(principal, fieldDefinition);
+
+        // Assert
+        Assert.NotNull(options);
+        Assert.Equal(3, options.Count);
+        Assert.Contains(options, o => o.Title == "High");
+        Assert.Contains(options, o => o.Title == "Medium");
+        Assert.Contains(options, o => o.Title == "Low");
+    }
+
+    /// <summary>
+    /// Tests that <see cref="FieldDefinitionManager.GetOptionsAsync"/> returns an empty list when no options are defined.
+    /// </summary>
+    [Fact]
+    public async Task GetOptionsAsync_ShouldReturnEmptyList_WhenNoOptionsDefined()
+    {
+        // Arrange
+        var fieldDefinition = new FieldDefinition
+        {
+            Name = "EmptyOptions",
+            Target = FieldTarget.Issue,
+            Options = null
+        };
+        var sut = await CreateSutAsync(fieldDefinition);
+        var principal = GetUserWithPermissions(PermissionLevel.All);
+
+        // Act
+        var options = await sut.GetOptionsAsync(principal, fieldDefinition);
+
+        // Assert
+        Assert.NotNull(options);
+        Assert.Empty(options);
+    }
+
+    /// <summary>
+    /// Verifies that clearing the cache calls Remove with the expected cache key
+    /// </summary>
+    [Fact]
+    public void ClearTenantCache_ShouldRemoveCacheEntry_ForGivenTenantId()
+    {
+        // Arrange
+        var memoryCache = Substitute.For<IMemoryCache>();
+        var completionProviders = Array.Empty<IFieldCompletionsProvider>();
+        var fieldRepository = Substitute.For<IFieldRepository>();
+        var sut = new FieldDefinitionManager(memoryCache, completionProviders, fieldRepository);
+        var tenantId = "tenant-123";
+        var expectedCacheKey = "fielddefinitions:" + tenantId;
+
+        // Act
+        sut.ClearTenantCache(tenantId);
+
+        // Assert
+        memoryCache.Received(1).Remove(expectedCacheKey);
+    }
+
+    /// <summary>
+    /// Verifies that there's no exception when there's no cache entry for the given tenant ID
+    /// </summary>
+    [Fact]
+    public void ClearTenantCache_ShouldNotThrow_WhenCacheKeyDoesNotExist()
+    {
+        // Arrange
+        var memoryCache = Substitute.For<IMemoryCache>();
+        var completionProviders = Array.Empty<IFieldCompletionsProvider>();
+        var fieldRepository = Substitute.For<IFieldRepository>();
+        var sut = new FieldDefinitionManager(memoryCache, completionProviders, fieldRepository);
+        var tenantId = "nonexistent-tenant";
+
+        // Act & Assert
+        var exception = Record.Exception(() => sut.ClearTenantCache(tenantId));
+        Assert.Null(exception);
+        memoryCache.Received(1).Remove("fielddefinitions:" + tenantId);
     }
 }

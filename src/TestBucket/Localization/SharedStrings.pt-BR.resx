@@ -117,7 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="access-failed-count" xml:space="preserve">
     <value>Contagem de falhas de acesso</value>
   </data>
@@ -323,6 +322,10 @@
   <data name="create-test-run" xml:space="preserve">
     <value>Crie Run</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="creating-pipeline" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="dashboard" xml:space="preserve">
     <value>Painel</value>
   </data>
@@ -334,6 +337,9 @@
   </data>
   <data name="default-reviewers" xml:space="preserve">
     <value>Revisores padrão</value>
+  </data>
+  <data name="Defines the runner for automated tests when running within TB." type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="delete" xml:space="preserve">
     <value>Excluir</value>
@@ -394,6 +400,9 @@
   </data>
   <data name="edit" xml:space="preserve">
     <value>Editar</value>
+  </data>
+  <data name="edit-automation-properties" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="edit-folder" xml:space="preserve">
     <value>Editar pasta</value>
@@ -745,6 +754,9 @@
   <data name="pipelines" xml:space="preserve">
     <value>Pipelines</value>
   </data>
+  <data name="please-wait" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="post-conditions" xml:space="preserve">
     <value>Pós-condicionas</value>
   </data>
@@ -870,6 +882,9 @@
   <data name="runner" xml:space="preserve">
     <value>Runner</value>
   </data>
+  <data name="runner-language" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
   <data name="runners" xml:space="preserve">
     <value>Corredores</value>
   </data>
@@ -990,6 +1005,9 @@
   </data>
   <data name="test-case" xml:space="preserve">
     <value>Caso de teste</value>
+  </data>
+  <data name="test-case-external-id-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="test-case-run" xml:space="preserve">
     <value>Resultado do teste</value>
@@ -1146,22 +1164,10 @@ As variáveis são definidas em um caso de teste como {{key}} e ao executar um c
   <data name="welcome-message" xml:space="preserve">
     <value>Bem -vindo ao balde de teste</value>
   </data>
-  <data name="creating-pipeline" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>Criando pipeline ..</value>
+  <data name="ci-cd-workflow" xml:space="preserve">
+    <value />
   </data>
-  <data name="Defines the runner for automated tests when running within TB." type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>Descrição da linguagem do corredor</value>
-  </data>
-  <data name="edit-automation-properties" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>Editar propriedades de automação</value>
-  </data>
-  <data name="runner-language" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>Linguagem corredor</value>
-  </data>
-  <data name="test-case-external-id-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>O ID externo para casos de teste é usado para mapear resultados automatizados importados no caso de teste correto</value>
-  </data>
-  <data name="please-wait" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value>Por favor, aguarde..</value>
+  <data name="testsuite-ci-cd-workflow-description" xml:space="preserve">
+    <value />
   </data>
 </root>

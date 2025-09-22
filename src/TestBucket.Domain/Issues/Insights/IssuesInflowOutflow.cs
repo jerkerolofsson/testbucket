@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,7 +57,7 @@ internal class IssuesInflowOutflow : IInsightsDataSource
         {
             try
             {
-                return data.ConvertToStringLabels(label => label.ToString(query.DateFormat));
+                return data.ConvertToStringLabels(label => label.ToString(query.DateFormat, CultureInfo.InvariantCulture));
             }
             catch(FormatException) {} // user defined format..
         }

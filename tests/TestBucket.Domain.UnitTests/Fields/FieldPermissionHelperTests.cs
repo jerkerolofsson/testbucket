@@ -8,7 +8,7 @@ namespace TestBucket.Domain.UnitTests.Fields
     /// <summary>
     /// Contains unit tests for the <see cref="FieldPermissionHelper"/> and related permission logic for custom fields.
     /// </summary>
-    [Feature("Custom Fields")]
+    [Feature("Fields")]
     [UnitTest]
     [Component("Fields")]
     [EnrichedTest]

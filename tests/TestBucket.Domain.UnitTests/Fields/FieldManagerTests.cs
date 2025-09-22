@@ -15,7 +15,7 @@ namespace TestBucket.Domain.UnitTests.Fields;
 /// <summary>
 /// Tests for FieldManager
 /// </summary>
-[Feature("Custom Fields")]
+[Feature("Fields")]
 [UnitTest]
 [Component("Fields")]
 [EnrichedTest]

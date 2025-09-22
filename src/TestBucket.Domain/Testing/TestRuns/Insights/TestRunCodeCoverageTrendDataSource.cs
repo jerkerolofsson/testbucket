@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Insights;
+﻿using System.Globalization;
+
+using TestBucket.Contracts.Insights;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Insights.Model;
@@ -47,7 +49,7 @@ internal class TestRunCodeCoverageTrendDataSource : IInsightsDataSource
         {
             try
             {
-                return data.ConvertToStringLabels(label => label.ToString(query.DateFormat));
+                return data.ConvertToStringLabels(label => label.ToString(query.DateFormat, CultureInfo.InvariantCulture));
             }
             catch (FormatException) { } // user defined format..
         }

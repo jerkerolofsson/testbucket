@@ -9,7 +9,7 @@ namespace TestBucket.Domain.UnitTests.Fields;
 /// Unit tests for <see cref="DefaultFieldAssigner"/>.
 /// Verifies that default fields are correctly assigned to TestCase, LocalIssue, and Requirement entities.
 /// </summary>
-[Feature("Custom Fields")]
+[Feature("Fields")]
 [UnitTest]
 [Component("Fields")]
 [EnrichedTest]

@@ -1,6 +1,7 @@
 ﻿using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Insights.Extensions;
 using TestBucket.Contracts.Insights;
+using System.Globalization;
 
 namespace TestBucket.Domain.UnitTests.Insights
 {
@@ -53,7 +54,7 @@ namespace TestBucket.Domain.UnitTests.Insights
             series.SortBy = InsightsSort.LabelAscending;
 
             // Use a data format that isn't sorted properly as strings
-            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy"));
+            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture));
 
             // Act
             var labels = convertedData.Series[0].Labels.ToList();
@@ -80,7 +81,7 @@ namespace TestBucket.Domain.UnitTests.Insights
             series.SortBy = InsightsSort.LabelAscending;
 
             // Use a data format that isn't sorted properly as strings
-            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy"));
+            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture));
 
             // Act
             var labels = convertedData.Series[0].Labels.ToList();
@@ -108,7 +109,7 @@ namespace TestBucket.Domain.UnitTests.Insights
             series.SortBy = InsightsSort.LabelAscending;
 
             // Use a data format that isn't sorted properly as strings
-            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy"));
+            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture));
 
             // Act
             var labels = convertedData.Series[0].Labels.ToList();

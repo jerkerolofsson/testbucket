@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 using TestBucket.CodeCoverage.CSharp;
@@ -19,11 +14,6 @@ public class CoberturaParser : ParserBase
 
     internal static string ExtractMethodName(string methodName, string className)
     {
-        if(methodName.Contains("GetOptions") && className.Contains("FieldDefinitionMan"))
-        {
-
-        }
-
         if (methodName.Contains("|") || className.Contains("|"))
         {
             Match match = LocalFunctionMethodNameRegex.Match(className + methodName);
@@ -53,11 +43,6 @@ public class CoberturaParser : ParserBase
         }
 
         methodName = CSharpCleanup.CleanupMethodName(methodName);
-
-        if(methodName.StartsWith('<'))
-        {
-
-        }
 
         return methodName;
     }

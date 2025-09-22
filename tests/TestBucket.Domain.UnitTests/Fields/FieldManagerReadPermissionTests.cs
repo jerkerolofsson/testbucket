@@ -14,7 +14,7 @@ namespace TestBucket.Domain.UnitTests.Fields;
 /// <summary>
 /// Unit tests for verifying read permissions in the FieldManager class.
 /// </summary>
-[Feature("Custom Fields")]
+[Feature("Fields")]
 [UnitTest]
 [Component("Fields")]
 [EnrichedTest]

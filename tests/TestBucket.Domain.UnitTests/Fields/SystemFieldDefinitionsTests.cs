@@ -1,15 +1,13 @@
-﻿using System.Linq;
-using TestBucket.Contracts.Fields;
+﻿using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.SystemFields;
 using TestBucket.Domain.Identity.Permissions;
-using Xunit;
 
 namespace TestBucket.Domain.UnitTests.Fields
 {
     /// <summary>
     /// Unit tests for <see cref="SystemFieldDefinitions"/>.
     /// </summary>
-    [Feature("Custom Fields")]
+    [Feature("Fields")]
     [UnitTest]
     [Component("Fields")]
     [EnrichedTest]

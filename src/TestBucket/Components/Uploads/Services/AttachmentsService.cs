@@ -24,20 +24,28 @@ internal class AttachmentsService : TenantBaseService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<bool> DeleteResourceByIdAsync(long id)
+    public async Task<bool> DeleteResourceByIdAsync(long id, bool prompt = true)
     {
-        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        var principal = await GetUserClaimsPrincipalAsync();
+        if (prompt)
         {
-            YesText = _loc.Shared["yes"],
-            NoText = _loc.Shared["no"],
-            Title = _loc.Shared["confirm-delete-title"],
-            MarkupMessage = new MarkupString(_loc.Shared["confirm-delete-message"])
-        });
-        if (result == true)
+            var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+            {
+                YesText = _loc.Shared["yes"],
+                NoText = _loc.Shared["no"],
+                Title = _loc.Shared["confirm-delete-title"],
+                MarkupMessage = new MarkupString(_loc.Shared["confirm-delete-message"])
+            });
+            if (result == true)
+            {
+                return await _fileResourceManager.DeleteResourceByIdAsync(principal, id);
+            }
+        }
+        else
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             return await _fileResourceManager.DeleteResourceByIdAsync(principal, id);
         }
+
         return false;
     }
 

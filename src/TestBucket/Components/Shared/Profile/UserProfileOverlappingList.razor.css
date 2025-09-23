@@ -1,0 +1,8 @@
+﻿.tb-user-profiles-overlapping {
+    display: flex;
+    align-items: center;
+}
+
+.tb-user-profiles-overlapping ::deep > * {
+    margin-right: -10px;
+}

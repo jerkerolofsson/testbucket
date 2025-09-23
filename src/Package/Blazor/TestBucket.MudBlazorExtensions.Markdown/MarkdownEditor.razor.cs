@@ -42,6 +42,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         [Parameter] public Size IconSize { get; set; } = Size.Small;
         [Parameter] public bool ShowToolbar { get; set; } = true;
         [Parameter] public RenderFragment? ToolBarContent { get; set; }
+        [Parameter] public RenderFragment? ToolBarStartContent { get; set; }
         [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
 
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }

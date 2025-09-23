@@ -11,7 +11,7 @@ using TestBucket.Domain.Testing.Models;
 
 using Xunit;
 
-namespace TestBucket.Domain.UnitTests.Automation
+namespace TestBucket.Domain.UnitTests.Automation.Hybrid
 {
     /// <summary>
     /// Unit tests for the <see cref="HybridDetector"/> class.

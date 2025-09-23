@@ -29,7 +29,7 @@ namespace TestBucket.Contracts.Identity
 
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new("scope", scope),
-                ..claims.Where(x => x.Type is "project" or "tenant" or ClaimTypes.Name or ClaimTypes.Email)
+                ..claims.Where(x => x.Type is "project" or "tenant" or ClaimTypes.Name or ClaimTypes.Email or "permissions")
             ];
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(symmetricKey));

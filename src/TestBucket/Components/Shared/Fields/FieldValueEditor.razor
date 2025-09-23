@@ -75,7 +75,7 @@
     {
         @if(Field.StringValue is null)
         {
-            <UploadFile Accept="*.jpg;*.png" MaxFileSize="100000" FileUploaded="OnImageUploaded"/>
+            <UploadFile Accept="*.jpg;*.png;*.webp" MaxFileSize="100000" FileUploaded="OnImageUploaded"/>
         }
         else
         {
@@ -87,7 +87,7 @@
     }
     else if (type == FieldType.SingleSelection)
     {
-        <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable>
+        @* <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable>
             @foreach (var item in _options.Where(x=>x.Title != null))
             {
                 <MudSelectItem Value="@item.Title">
@@ -96,7 +96,34 @@
                     </MudStack>
                 </MudSelectItem>
             }
-        </MudSelect>
+        </MudSelect> *@
+
+		<div>
+			<MudSelectExtended 
+				Clearable 
+				ValuePresenter="ValuePresenter.ItemContent"
+				SearchBoxClearable 
+				SearchBoxAutoFocus 
+				SearchBox
+				Value="@_selectedOption" 
+				T="GenericVisualEntity" 
+				ItemCollection="@_options"
+				ValueChanged="OnOptionChanged"  
+				Variant="Variant.Outlined">
+				<ItemTemplate>
+					<MudStack Class="mud-width-full" Row AlignItems="AlignItems.Center">
+
+						@if(context.Value?.Icon is not null)
+						{
+							<MudIcon Icon="@context.Value.Icon" Size="Size.Small"/>
+						}
+
+						<MudText><b>@context.Value?.Title</b></MudText>
+					
+					</MudStack>
+				</ItemTemplate>
+			</MudSelectExtended>
+		</div>
     }
     else if (type == FieldType.Boolean)
     {
@@ -146,189 +173,204 @@
 }
 
 @code {
-    [Parameter] public FieldValue? Field { get; set; }
-    [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
-    [Parameter] public bool AllowMultiSelection { get; set; } = true;
+	[Parameter] public FieldValue? Field { get; set; }
+	[Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
+	[Parameter] public bool AllowMultiSelection { get; set; } = true;
 
-    private string _addStringArrayValue = "";
-    private IReadOnlyList<GenericVisualEntity> _options = [];
-    private FieldValue? _field;
-    private Dock _dock = Dock.Left;
+	private string _addStringArrayValue = "";
+	private ICollection<GenericVisualEntity> _options = [];
+	private GenericVisualEntity? _selectedOption;
+	private FieldValue? _field;
+	private Dock _dock = Dock.Left;
 
-    private DateTime? _date;
+	private DateTime? _date;
 
-    private async Task OnDateChanged(DateTime? date)
-    {
-        _date = date;
+	private async Task OnDateChanged(DateTime? date)
+	{
+		_date = date;
 
-        if (Field?.FieldDefinition is null)
-        {
-            return;
-        }
+		if (Field?.FieldDefinition is null)
+		{
+			return;
+		}
 
-        if(date is null)
-        {
-            Field.DateValue = null;
-            Field.DateTimeOffsetValue = null;
-        }
-        else if(Field.FieldDefinition.Type == FieldType.DateTimeOffset)
-        {
-            Field.DateTimeOffsetValue = new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
-        }
-        else if (Field.FieldDefinition.Type == FieldType.DateOnly)
-        {
-            Field.DateValue = DateOnly.FromDateTime(date.Value);
-        }
-        await FieldChanged.InvokeAsync(Field);
-    }
+		if(date is null)
+		{
+			Field.DateValue = null;
+			Field.DateTimeOffsetValue = null;
+		}
+		else if(Field.FieldDefinition.Type == FieldType.DateTimeOffset)
+		{
+			Field.DateTimeOffsetValue = new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
+		}
+		else if (Field.FieldDefinition.Type == FieldType.DateOnly)
+		{
+			Field.DateValue = DateOnly.FromDateTime(date.Value);
+		}
+		await FieldChanged.InvokeAsync(Field);
+	}
 
-    private async Task RemoveStringArrayValueAsync(string? value)
-    {
-        if (Field is null || value is null)
-        {
-            return;
-        }
-        Field.StringValue = null;
-        Field.StringValuesList ??= [];
-        Field.StringValuesList = Field.StringValuesList.Where(x => x != value).ToList();
-        this.StateHasChanged();
+	private async Task RemoveStringArrayValueAsync(string? value)
+	{
+		if (Field is null || value is null)
+		{
+			return;
+		}
+		Field.StringValue = null;
+		Field.StringValuesList ??= [];
+		Field.StringValuesList = Field.StringValuesList.Where(x => x != value).ToList();
+		this.StateHasChanged();
 
-        await FieldChanged.InvokeAsync(Field);
-    }
+		await FieldChanged.InvokeAsync(Field);
+	}
 
-    private async Task ToggleStringArrayValueAsync(string value)
-    {
-        if (Field is null || string.IsNullOrEmpty(value))
-        {
-            return;
-        }
-        Field.StringValue = null;
-        Field.StringValuesList ??= [];
-        if (!Field.StringValuesList.Contains(value))
-        {
-            Field.StringValuesList.Add(value);
-        }
-        else
-        {
-            Field.StringValuesList.Remove(value);
-        }
+	private async Task ToggleStringArrayValueAsync(string value)
+	{
+		if (Field is null || string.IsNullOrEmpty(value))
+		{
+			return;
+		}
+		Field.StringValue = null;
+		Field.StringValuesList ??= [];
+		if (!Field.StringValuesList.Contains(value))
+		{
+			Field.StringValuesList.Add(value);
+		}
+		else
+		{
+			Field.StringValuesList.Remove(value);
+		}
 
-        this.StateHasChanged();
+		this.StateHasChanged();
 
-        await FieldChanged.InvokeAsync(Field);
-    }
+		await FieldChanged.InvokeAsync(Field);
+	}
 
-    private async Task AddStringArrayValueAsync()
-    {
-        var value = _addStringArrayValue;
-        if (Field is null || string.IsNullOrEmpty(value))
-        {
-            return;
-        }
-        Field.StringValue = null;
-        Field.StringValuesList ??= [];
-        if(!Field.StringValuesList.Contains(value))
-        {
-            Field.StringValuesList.Add(value);
-        }
+	private async Task AddStringArrayValueAsync()
+	{
+		var value = _addStringArrayValue;
+		if (Field is null || string.IsNullOrEmpty(value))
+		{
+			return;
+		}
+		Field.StringValue = null;
+		Field.StringValuesList ??= [];
+		if(!Field.StringValuesList.Contains(value))
+		{
+			Field.StringValuesList.Add(value);
+		}
 
-        _addStringArrayValue = "";
-        this.StateHasChanged();
+		_addStringArrayValue = "";
+		this.StateHasChanged();
 
-        await FieldChanged.InvokeAsync(Field);
-    }
+		await FieldChanged.InvokeAsync(Field);
+	}
 
-    protected override async Task OnParametersSetAsync()
-    {
-        if(Field is null)
-        {
-            return;
-        }
+	protected override async Task OnParametersSetAsync()
+	{
+		if(Field is null)
+		{
+			return;
+		}
 
-        if (Field.Id != _field?.Id)
-        {
-            _field = Field;
-            _options = [];
-            _date = null;
-            if (Field?.FieldDefinition is null)
-            {
-                return;
-            }
+		if (Field.Id != _field?.Id)
+		{
+			_field = Field;
+			_options = [];
+			_date = null;
+			if (Field?.FieldDefinition is null)
+			{
+				return;
+			}
 
-            if (Field.DateTimeOffsetValue is not null)
-            {
-                _date = Field.DateTimeOffsetValue.Value.Date.ToLocalTime();
-            }
-            if (Field.DateValue is not null)
-            {
-                _date = Field.DateValue.Value.ToDateTime(TimeOnly.MinValue);
-            }
+			if (Field.DateTimeOffsetValue is not null)
+			{
+				_date = Field.DateTimeOffsetValue.Value.Date.ToLocalTime();
+			}
+			if (Field.DateValue is not null)
+			{
+				_date = Field.DateValue.Value.ToDateTime(TimeOnly.MinValue);
+			}
 
-            if(Field.LongValue is not null)
-            {
-                _dock = (Dock)Field.LongValue.Value;
-            }
+			if(Field.LongValue is not null)
+			{
+				_dock = (Dock)Field.LongValue.Value;
+			}
 
-            if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
-            {
-                Field.StringValuesList ??= [];
-            }
-            if ((Field.FieldDefinition.Type is FieldType.SingleSelection or FieldType.MultiSelection or FieldType.StringArray))
-            {
-                if(Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.Dock)
-                {
-                    _options = await fieldController.GetOptionsAsync(Field.FieldDefinition);
-                }
-            }
-        }
-    }
+			if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
+			{
+				Field.StringValuesList ??= [];
+			}
+			if ((Field.FieldDefinition.Type is FieldType.SingleSelection or FieldType.MultiSelection or FieldType.StringArray))
+			{
+				if(Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.Dock)
+				{
+					var options = await fieldController.GetOptionsAsync(Field.FieldDefinition);
+					_options = options.ToList();
 
-    private async Task OnMultiSelectionChanged(IEnumerable<string> values)
-    {
-        if (Field is not null)
-        {
-            Field.StringValuesList = values.ToList();
-            await FieldChanged.InvokeAsync(Field);
-        }
-    }
+					_selectedOption = _options.FirstOrDefault(x => x.Title == Field.StringValue);
+				}
+			}
+		}
+	}
 
-    
-    private async Task OnTimeSpanValueChanged(TimeSpan value)
-    {
-        if (Field is not null)
-        {
-            Field.TimeSpanValue = value;
-            await FieldChanged.InvokeAsync(Field);
-        }
-    }
+	private async Task OnMultiSelectionChanged(IEnumerable<string> values)
+	{
+		if (Field is not null)
+		{
+			Field.StringValuesList = values.ToList();
+			await FieldChanged.InvokeAsync(Field);
+		}
+	}
 
-    private async Task OnDoubleValueChanged(double? value)
-    {
-        if (Field is not null)
-        {
-            Field.DoubleValue = value;
-            await FieldChanged.InvokeAsync(Field);
-        }
-    }
-    private async Task OnLongValueChanged(long? value)
-    {
-        if (Field is not null)
-        {
-            Field.LongValue = value;
-            await FieldChanged.InvokeAsync(Field);
-        }
-    }
-    private async Task OnStringValueChanged(string value)
-    {
-        if (Field is not null)
-        {
-            Field.StringValuesList = null;
-            Field.StringValue = value;
-            await FieldChanged.InvokeAsync(Field);
-        }
-    }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+	private async Task OnTimeSpanValueChanged(TimeSpan value)
+	{
+		if (Field is not null)
+		{
+			Field.TimeSpanValue = value;
+			await FieldChanged.InvokeAsync(Field);
+		}
+	}
+
+	private async Task OnDoubleValueChanged(double? value)
+	{
+		if (Field is not null)
+		{
+			Field.DoubleValue = value;
+			await FieldChanged.InvokeAsync(Field);
+		}
+	}
+	private async Task OnLongValueChanged(long? value)
+	{
+		if (Field is not null)
+		{
+			Field.LongValue = value;
+			await FieldChanged.InvokeAsync(Field);
+		}
+	}
+	private async Task OnStringValueChanged(string value)
+	{
+		if (Field is not null)
+		{
+			Field.StringValuesList = null;
+			Field.StringValue = value;
+			await FieldChanged.InvokeAsync(Field);
+		}
+	}
+
+	private async Task OnOptionChanged(GenericVisualEntity? option)
+	{
+		_selectedOption = option;
+		if (Field is not null)
+		{
+			Field.StringValuesList = null;
+			Field.StringValue = option?.Title;
+			await FieldChanged.InvokeAsync(Field);
+		}
+	}
+
+	protected override Task OnAfterRenderAsync(bool firstRender)
     {
         return base.OnAfterRenderAsync(firstRender);
     }
@@ -406,8 +448,7 @@
             await FieldChanged.InvokeAsync(Field);
 
             // Delete it, we no longer need it
-            await attachmentController.DeleteResourceByIdAsync(file.Id);
-
+            await attachmentController.DeleteResourceByIdAsync(file.Id, prompt: false);
         }
     }
 }

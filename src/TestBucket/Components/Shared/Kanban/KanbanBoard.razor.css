@@ -42,6 +42,9 @@
     border-radius: var(--border-radius);
     border-left: solid 4px #ff595e;
     border: solid 1px transparent;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 .tb-kanban-board .list .card:hover {
@@ -82,4 +85,10 @@
 
 .tb-kanban-board .list .card[data-hash="9"] {
     border-left: solid 4px #e07be0;
+}
+
+.tb-kanban-board .card ::deep .mud-menu,
+.tb-kanban-board .card ::deep .mud-menu-activator {
+    display: block;
+    width: 100%;
 }

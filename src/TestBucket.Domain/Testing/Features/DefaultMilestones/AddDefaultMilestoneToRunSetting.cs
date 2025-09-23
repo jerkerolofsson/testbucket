@@ -13,6 +13,7 @@ internal class AddDefaultMilestoneToRunSetting : SettingAdapter
 
         Metadata.Name = loc.Shared["add-default-milestone-to-imported-run"];
         Metadata.Description = loc.Shared["add-default-milestone-to-imported-run-description"];
+        Metadata.ShowDescription = true;
         Metadata.Category.Name = "testing";
         Metadata.Category.Icon = SettingIcons.Testing;
         Metadata.Section.Name = "import";

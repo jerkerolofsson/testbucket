@@ -20,10 +20,12 @@
                               AutoFocus="true" />
 
                         <MarkdownEditor Preview="false"
+										CanToggleEdit="false"
                                         ValueUpdateMode="ValueUpdateMode.OnBlur"
                                         ShowToolbar="true"
                                         MaxHeight="100%"
-                                        Color="Color.Primary"
+										ToolbarButtonClass="tb-markdown-toolbar-button"
+                                        Color="Color.Surface"
                                         AllowResize="true"
                                         Value="@Specification.Description"
                                         ValueChanged="OnDescriptionChanged"

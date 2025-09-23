@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Runners.Models;
+﻿using TestBucket.Contracts.Runners.Models;
 using TestBucket.Runner.Settings;
 
 namespace TestBucket.Runner.Registration
@@ -38,7 +32,7 @@ namespace TestBucket.Runner.Registration
                         Name = settings.Name!,
                         Tags = settings.Tags,
                         PublicBaseUrl = settings.PublicBaseUrl,
-                        Languages = ["pwsh", "powershell", "bash", "cmd", "http", "python"]
+                        Languages = ["pwsh", "powershell", "bash", "cmd", "http", "python", "csharp"]
                     };
 
                     if (settings.AccessToken is not null)

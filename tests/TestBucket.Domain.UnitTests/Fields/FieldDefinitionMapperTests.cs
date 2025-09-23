@@ -4,6 +4,10 @@ using Xunit;
 
 namespace TestBucket.Domain.UnitTests.Fields;
 
+/// <summary>
+/// Contains unit tests for the <see cref="FieldDefinition"/> mapping functionality,
+/// specifically verifying the behavior of the <c>ToDto</c> extension method.
+/// </summary>
 [Feature("Fields")]
 [UnitTest]
 [Component("Fields")]
@@ -11,6 +15,10 @@ namespace TestBucket.Domain.UnitTests.Fields;
 [FunctionalTest]
 public class FieldDefinitionMapperTests
 {
+    /// <summary>
+    /// Verifies that <c>ToDto</c> correctly maps all properties from a <see cref="FieldDefinition"/>
+    /// to its corresponding DTO, including all value and reference types.
+    /// </summary>
     [Fact]
     public void ToDto_MapsAllPropertiesCorrectly()
     {
@@ -62,6 +70,9 @@ public class FieldDefinitionMapperTests
         Assert.Equal(field.ReadOnly, dto.ReadOnly);
     }
 
+    /// <summary>
+    /// Verifies that <c>ToDto</c> correctly handles <c>null</c> values for collection and reference type properties.
+    /// </summary>
     [Fact]
     public void ToDto_NullableCollectionsHandled()
     {

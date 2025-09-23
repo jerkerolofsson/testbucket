@@ -14,21 +14,26 @@
 @inject RequirementEditorController controller
 @inject IRequirementManager requirementManager
 @inject MilestonesController milestonesController
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="pa-2" Style="height: 100%">
     @if(Project is not null && _requirement is not null)
     {
         <MudGanttChart  Tasks="@_tasks" 
+						@ref="_mudGanttChart"
                         Dense
                         Size="Size.Small"
                         Events="@_events" 
                         TaskDatesChanged="OnDatesChanged"
                         TaskClicked="OnTaskClicked"
-                       ContextMenuOpening="OnTaskContextMenuOpening"
+						ContextMenuOpening="OnTaskContextMenuOpening"
                         TaskProgressChanged="OnProgressChanged">
-                        <TaskContextMenu>
-                            <CommandMenuItems Flatten TypeNames="Requirement"/>
-                        </TaskContextMenu>
+			<TaskContextMenu>
+				<MudMenuItem Icon="@Icons.Material.Filled.ZoomIn" OnClick="ZoonInAsync">@loc["zoom-in"]</MudMenuItem>
+				<MudMenuItem Icon="@Icons.Material.Filled.ZoomOut" OnClick="ZoonOutAsync">@loc["zoom-out"]</MudMenuItem>
+				<MudDivider />
+				<CommandMenuItems Flatten TypeNames="Requirement" />
+			</TaskContextMenu>
         </MudGanttChart>
     }
 </MudStack>
@@ -39,22 +44,37 @@
     [Parameter] public long RequirementId { get; set; }
     [Parameter] public string? TenantId { get; set; }
 
+	private MudGanttChart _mudGanttChart = default!;
+
     private Requirement? _requirement = null;
     private List<Requirement> _requirements = [];
     private List<MudGanttTask> _tasks = [];
     private List<MudGanttEvent> _events = [];
 
-    private void OnTaskContextMenuOpening(MudGanttTask task)
-    {
-        if (long.TryParse(task.Id, out var id))
-        {
-            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
-            if (requirement is not null)
-            {
-                appNavigationManager.State.SetSelectedRequirement(requirement);
-            }
-        }
-    }
+	private async Task ZoonInAsync()
+	{
+		await _mudGanttChart.ZoomInAsync();		
+	}
+	private async Task ZoonOutAsync()
+	{
+		await _mudGanttChart.ZoomOutAsync();		
+	}
+	private void OnTaskContextMenuOpening(MudGanttTask? task)
+	{
+		if (task is not null && long.TryParse(task.Id, out var id))
+		{
+			var requirement = _requirements.FirstOrDefault(x => x.Id == id);
+			if (requirement is not null)
+			{
+				appNavigationManager.State.SetSelectedRequirement(requirement);
+			}
+		}
+		else
+		{
+			appNavigationManager.State.ClearSelection();
+		}
+	}
+
 
     private void OnTaskClicked(MudGanttTask task)
     {

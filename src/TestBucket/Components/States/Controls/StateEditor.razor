@@ -19,7 +19,7 @@
 				</div>
 			</FieldHeader>
 			<MudSpacer />
-			<MudTextField Lines="10" id="saliases" Variant="Variant.Outlined" Value="@_aliases" T="string" ValueChanged="OnAliasesChanged"></MudTextField>
+			<MudTextField Lines="10" id="aliases" Variant="Variant.Outlined" Value="@_aliases" T="string" ValueChanged="OnAliasesChanged"></MudTextField>
 		</Field>
 
         <Field Row>
@@ -39,6 +39,15 @@
             </MudSelect>
         </Field>
 
+		<Field Row>
+			<FieldHeader for="sort-order">
+				<div class="tb-fields-name-description-tight">
+					<div>@loc.Shared["sort-order"]</div>
+				</div>
+			</FieldHeader>
+			<MudSpacer />
+			<MudNumericField id="sort-order" T="int" Variant="Variant.Outlined" @bind-Value="@State.SortOrder"></MudNumericField>
+		</Field>
 
         <Field Row>
             <FieldHeader for="state-color">@loc.Settings["color"]</FieldHeader>

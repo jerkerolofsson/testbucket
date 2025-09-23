@@ -35,6 +35,11 @@ public class BaseState
     public bool IsInitial { get; set; }
 
     /// <summary>
+    /// Sort order
+    /// </summary>
+    public int SortOrder { get; set; }
+
+    /// <summary>
     /// Tries to set a mapped state from a string
     /// </summary>
     /// <param name="name"></param>

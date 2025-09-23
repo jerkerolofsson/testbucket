@@ -33,12 +33,12 @@ public class SettingsManager
         bool changed = false;
         if (settings.Id is null)
         {
-            settings.Id = Guid.NewGuid().ToString();
+            settings.Id = Environment.GetEnvironmentVariable("TB_RUNNER_INSTANCE") ?? Guid.NewGuid().ToString();
             changed = true;
         }
         if (settings.Name is null)
         {
-            settings.Name = "runner";
+            settings.Name = Environment.GetEnvironmentVariable("TB_RUNNER_NAME") ?? "runner";
             changed = true;
         }
         if (Environment.GetEnvironmentVariable("TB_ACCESS_TOKEN") is string accessToken)
@@ -61,7 +61,9 @@ public class SettingsManager
 
     private string GetSettingsPath()
     {
-        string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "test-bucket", "runner");
+        string instance = Environment.GetEnvironmentVariable("TB_RUNNER_INSTANCE") ?? "instance0";
+
+        string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "test-bucket", "runners", instance);
         if(!Directory.Exists(directoryPath))
         {
             Directory.CreateDirectory(directoryPath);

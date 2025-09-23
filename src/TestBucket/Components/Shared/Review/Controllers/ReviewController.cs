@@ -1,6 +1,7 @@
 ﻿
 using TestBucket.Domain.Audit;
 using TestBucket.Domain.Audit.Models;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.Testing.TestCases;
 
 namespace TestBucket.Components.Shared.Review.Controllers;
@@ -14,6 +15,13 @@ internal class ReviewController : TenantBaseService
     {
         _auditor = auditor;
         _testCaseManager = testCaseManager;
+    }
+
+    public async Task UpdateReviewerListAsync(TestCase test, List<AssignedReviewer> reviewers)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        test.ReviewAssignedTo = reviewers;
+        await _testCaseManager.SaveTestCaseAsync(principal, test);
     }
 
 

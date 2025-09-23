@@ -87,7 +87,9 @@ public class StateService : IStateService
         {
             entry = await RefreshAsync(principal, projectId);
         }
-        return entry?.TestCaseStates ?? DefaultStates.GetDefaultTestCaseStates();
+        var states = entry?.TestCaseStates ?? DefaultStates.GetDefaultTestCaseStates();
+        states = states.OrderBy(x => x.SortOrder).ToList();
+        return states;
     }
 
 
@@ -106,7 +108,9 @@ public class StateService : IStateService
         {
             entry = await RefreshAsync(principal, projectId);
         }
-        return entry?.TestCaseRunStates ?? DefaultStates.GetDefaultTestCaseRunStates();
+        var states = entry?.TestCaseRunStates ?? DefaultStates.GetDefaultTestCaseRunStates();
+        states = states.OrderBy(x => x.SortOrder).ToList();
+        return states;
     }
 
     private async Task<ProjectStateCacheEntry> RefreshAsync(ClaimsPrincipal principal, long projectId)
@@ -134,7 +138,9 @@ public class StateService : IStateService
         {
             entry = await RefreshAsync(principal, projectId);
         }
-        return entry?.IssueStates ?? DefaultStates.GetDefaultIssueStates();
+        var states = entry?.IssueStates ?? DefaultStates.GetDefaultIssueStates();
+        states = states.OrderBy(x=>x.SortOrder).ToList();
+        return states;
     }
 
     /// <summary>
@@ -152,7 +158,9 @@ public class StateService : IStateService
         {
             entry = await RefreshAsync(principal, projectId);
         }
-        return entry?.RequirementStates ?? DefaultStates.GetDefaultRequirementStates();
+        var states = entry?.RequirementStates ?? DefaultStates.GetDefaultRequirementStates();
+        states = states.OrderBy(x => x.SortOrder).ToList();
+        return states;
     }
 
     /// <summary>

@@ -4,45 +4,53 @@
 @inject IStringLocalizer<SecurityStrings> securityLoc
 @inject UserController userController
 
-<MudDataGrid CommittedItemChanges="OnCommittedItemChanges"
-    Items="AssignedReviewers" Dense Hover RowClass="tb-datarow cursor-pointer" T="AssignedReviewer" EditMode="DataGridEditMode.Cell" ReadOnly=false SortMode="SortMode.Single">
+@if (AssignedReviewers is null || AssignedReviewers.Count == 0)
+{
+	<MudAlert Icon="@Icons.Material.Filled.ErrorOutline" Style="background: var(--mud-palette-surface)"><div>@loc["no-data-alert"]</div></MudAlert>
 
-    <ColGroup>
-        <col />
-        <col />
-        @if (ShowVotes)
-        {
-            <col />
-        }
-        <col style="width:80px"/>
-    </ColGroup>
+}
+else
+{
+	<MudDataGrid CommittedItemChanges="OnCommittedItemChanges"
+		Items="AssignedReviewers" Dense Hover RowClass="tb-datarow cursor-pointer" T="AssignedReviewer" EditMode="DataGridEditMode.Cell" ReadOnly=false SortMode="SortMode.Single">
 
-    <Columns>
-        <PropertyColumn Property="x => x.UserName" Title="@loc["username"]" Editable="false"/>
-        <PropertyColumn Property="x => x.Role" Title="@securityLoc["role"]" Required=false />
-            @if(ShowVotes)
-            {
-                <TemplateColumn Title="@loc["votes"]" Required=false>
-                    <EditTemplate>
-                        @if(context.Item.Vote > 0)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.ThumbUp" Color="Color.Success"></MudIcon>
-                        }
-                        else if(context.Item.Vote < 0)
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.ThumbDown" Color="Color.Error"></MudIcon>
-                        }
+		<ColGroup>
+			<col />
+			<col />
+			@if (ShowVotes)
+			{
+				<col />
+			}
+			<col style="width:80px"/>
+		</ColGroup>
 
-                    </EditTemplate>
-                </TemplateColumn>
-            }
-            <TemplateColumn Title="" StickyRight>
-                <EditTemplate>
-                    <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="async()=>await DeleteAsync(context.Item)"></MudIconButton>
-                </EditTemplate>
-            </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+		<Columns>
+			<PropertyColumn Property="x => x.UserName" Title="@loc["username"]" Editable="false"/>
+			<PropertyColumn Property="x => x.Role" Title="@securityLoc["role"]" Required=false />
+				@if(ShowVotes)
+				{
+					<TemplateColumn Title="@loc["votes"]" Required=false>
+						<EditTemplate>
+							@if(context.Item.Vote > 0)
+							{
+								<MudIcon Icon="@Icons.Material.Filled.ThumbUp" Color="Color.Success"></MudIcon>
+							}
+							else if(context.Item.Vote < 0)
+							{
+								<MudIcon Icon="@Icons.Material.Filled.ThumbDown" Color="Color.Error"></MudIcon>
+							}
+
+						</EditTemplate>
+					</TemplateColumn>
+				}
+				<TemplateColumn Title="" StickyRight>
+					<EditTemplate>
+						<MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="async()=>await DeleteAsync(context.Item)"></MudIconButton>
+					</EditTemplate>
+				</TemplateColumn>
+		</Columns>
+	</MudDataGrid>
+}
 
 <MudStack Row Style="width: 100%">
     @if(FooterText is not null)

@@ -12,6 +12,7 @@ namespace TestBucket.Domain.Features.Archiving.Settings
 
             Metadata.Name = "archive-test-runs-automatically-age";
             Metadata.Description = "archive-test-runs-automatically-age-description";
+            Metadata.ShowDescription = true;
             Metadata.Section.Name = "archiving";
             Metadata.Section.Icon = SettingIcons.Archiving;
             Metadata.Category.Name = "testing";

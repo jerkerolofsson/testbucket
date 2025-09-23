@@ -6,4 +6,5 @@ public enum KanbanGroupBy
     Milestone,
     Assignee,
     Feature,
+    Component,
 }

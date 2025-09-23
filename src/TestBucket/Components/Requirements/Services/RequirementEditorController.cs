@@ -7,6 +7,7 @@ using Microsoft.Extensions.Localization;
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Shared.Alerts;
 using TestBucket.Components.Tests.TestCases.Dialogs;
+using TestBucket.Components.Users.Dialogs;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Files.Models;
@@ -164,6 +165,30 @@ internal class RequirementEditorController : TenantBaseService
 
         await _manager.DeleteRequirementAsync(principal, requirement);
 
+    }
+
+    internal async Task AssignRequirementToAsync(Requirement requirement)
+    {
+        var dialog = await _dialogService.ShowAsync<SelectUserDialog>(null, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if(result?.Data is string userName)
+        {
+            await AssignRequirementToAsync(requirement, userName);
+        }
+    }
+
+    internal async Task AssignRequirementToMeAsync(Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var name = principal.Identity?.Name ?? throw new UnauthorizedAccessException("User identity not set");
+        await AssignRequirementToAsync(requirement, name);
+    }
+
+    internal async Task AssignRequirementToAsync(Requirement requirement, string name)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        requirement.AssignedTo = name;
+        await _manager.UpdateRequirementAsync(principal, requirement);
     }
 
     internal async Task AddFolderAsync(long projectId, long specificationId, long? parentFolderId)

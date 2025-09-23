@@ -18,6 +18,8 @@
                     {
                         <MudToolBar Class="@ToolbarClassname">
 
+							@ToolBarStartContent
+
                             @if (CanToggleEdit)
                             {
                                 <MudButton Class="@(EditButtonClassname)"    OnClick="async () => await SetPreviewAsync(false)">Edit</MudButton>

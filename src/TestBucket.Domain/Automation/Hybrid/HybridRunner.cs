@@ -12,13 +12,13 @@ namespace TestBucket.Domain.Automation.Hybrid
     public class HybridRunner : IMarkdownTestRunner
     {
         private readonly IRunnerRepository _repository;
-        private readonly IJobRepository _jobRepository;
+        private readonly IJobManager _jobManager;
         private readonly JobAddedEventSignal _jobAddedEventSignal;
 
-        public HybridRunner(IRunnerRepository repository, IJobRepository jobRepository, JobAddedEventSignal jobAddedEventSignal)
+        public HybridRunner(IRunnerRepository repository, IJobManager jobManager, JobAddedEventSignal jobAddedEventSignal)
         {
             _repository = repository;
-            _jobRepository = jobRepository;
+            _jobManager = jobManager;
             _jobAddedEventSignal = jobAddedEventSignal;
         }
 
@@ -34,21 +34,21 @@ namespace TestBucket.Domain.Automation.Hybrid
         {
             Job job = CreateJob(context, language, code);
             job.TenantId = principal.GetTenantIdOrThrow();
-            await _jobRepository.AddAsync(job);
+            await _jobManager.AddAsync(principal, job);
 
             // Notify long-polling runners
-            _jobAddedEventSignal.Set();
+            _jobAddedEventSignal.Set(job.Guid);
 
-            return await WaitForJobCompletionAsync(job, cancellationToken);
+            return await WaitForJobCompletionAsync(principal, job, cancellationToken);
         }
 
-        private async Task<TestRunnerResult> WaitForJobCompletionAsync(Job job, CancellationToken cancellationToken)
+        private async Task<TestRunnerResult> WaitForJobCompletionAsync(ClaimsPrincipal principal, Job job, CancellationToken cancellationToken)
         {
             int sleepTime = 100;
             int loopCounter = 0;
             while (true)
             {
-                var updatedJob = await _jobRepository.GetByIdAsync(job.Id);
+                var updatedJob = await _jobManager.GetByIdAsync(principal, job.Id);
                 if (updatedJob is null)
                 {
                     return new TestRunnerResult { Completed = false, ErrorMessage = "Job deleted", Format = Formats.TestResultFormat.UnknownFormat, Result = "", Success = false };
@@ -98,7 +98,7 @@ namespace TestBucket.Domain.Automation.Hybrid
             }
         }
 
-        private static Job CreateJob(TestExecutionContext context, string language, string code)
+        internal static Job CreateJob(TestExecutionContext context, string language, string code)
         {
             return new Job
             {
@@ -146,6 +146,5 @@ namespace TestBucket.Domain.Automation.Hybrid
             }
             return supportedLanguages.ToArray();
         }
-
     }
 }

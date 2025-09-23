@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Integrations;
+﻿using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Progress;
-using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Services.Import;
-using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Automation.Hybrid;
 
@@ -139,40 +130,5 @@ internal class MarkdownAutomationRunner : IMarkdownAutomationRunner
                 TestRunId = runId
             });
         }
-        /*
-        else if(context.TestCaseId is not null)
-        {
-            // No result file, create a dummy case
-            var run = new TestRunDto
-            {
-                Name = "hybrid",
-                SystemOut = result.StdOut,
-                SystemErr = result.StdErr,
-                Suites = 
-                [
-                    new TestSuiteRunDto
-                    {
-                        Tests = 
-                        [
-                            new TestCaseRunDto
-                            {
-                                ExternalId = Guid.NewGuid().ToString(), 
-                                Name = "runner",
-                                Message = result.StdOut,
-                                SystemOut = result.StdOut,
-                                SystemErr = result.StdErr,
-                                Result = TestResult.Inconclusive
-                            }
-                        ]
-                    }
-                ]
-            };
-
-            await _importer.ImportRunAsync(principal, context.TeamId, context.ProjectId, run, new Formats.ImportHandlingOptions
-            {
-                TestCaseId = context.TestCaseId,
-                TestRunId = runId,
-            });
-        }*/
     }
 }

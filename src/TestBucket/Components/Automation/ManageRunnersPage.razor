@@ -31,6 +31,7 @@
         <ColGroup>
             <col />
             <col />
+			<col />
             <col style="width: 65px"/>
         </ColGroup>
 
@@ -39,7 +40,15 @@
 
             <PropertyColumn Property="x => x.Id" Title="@loc["id"]" />
             <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
-            <TemplateColumn>
+				<TemplateColumn Title="@loc["languages"]">
+					<CellTemplate>
+						@if(context.Item.Languages is not null)
+						{
+							@string.Join(", ", context.Item.Languages)
+						}
+					</CellTemplate>
+				</TemplateColumn>
+            <TemplateColumn StickyRight>
                 <CellTemplate>
                     <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async() => await RemoveRunnerAsync(context.Item)"/>
                 </CellTemplate>

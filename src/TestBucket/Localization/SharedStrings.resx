@@ -1175,4 +1175,23 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="add-default-milestone-to-imported-run-description" xml:space="preserve">
     <value>Adds the current open milestone to imported test runs unless a test run is explicitly set on the run. Only </value>
   </data>
+  <data name="zoom-in" xml:space="preserve">
+    <value>Zoom in</value>
+  </data>
+  <data name="zoom-out" xml:space="preserve">
+    <value>Zoom out</value>
+  </data>
+  <data name="assign-to-me" xml:space="preserve">
+    <value>Assign to me</value>
+  </data>
+  <data name="assign-to" xml:space="preserve">
+    <value>Assign to..</value>
+  </data>
+  <data name="assign" xml:space="preserve">
+    <value>Assign</value>
+    <comment>Assign (Verb), used as context menu folder</comment>
+  </data>
+  <data name="no-data-alert" xml:space="preserve">
+    <value>No data to show could be found..</value>
+  </data>
 </root>

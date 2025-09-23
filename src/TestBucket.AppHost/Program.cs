@@ -92,6 +92,8 @@ builder.AddProject<Projects.TestBucket_ResourceServer_Playwright>("testbucket-pl
 builder.AddProject<Projects.TestBucket_Runner>("testbucket-runner")
     .WithReference(testBucket)
     .WithEnvironment("TB_ACCESS_TOKEN", runnerAccessToken)
+    .WithEnvironment("TB_RUNNER_INSTANCE", "instance0")
+    .WithEnvironment("TB_RUNNER_NAME", "Development Runner 1")
     .WithReference(testBucket)
     .WaitFor(testBucket)
     ;

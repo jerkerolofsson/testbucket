@@ -110,6 +110,7 @@ public class StateDefinition : ProjectEntity
                 }
                 break;
         }
+        SortStates();
     }
 
     /// <summary>
@@ -134,6 +135,15 @@ public class StateDefinition : ProjectEntity
                 RequirementStates.RemoveAll(x => x.Equals(state));
                 break;
         }
+        SortStates();
+    }
+
+    private void SortStates()
+    {
+        TestCaseStates.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
+        IssueStates.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
+        TestCaseRunStates.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
+        RequirementStates.Sort((a, b) => a.SortOrder.CompareTo(b.SortOrder));
     }
 
     public IEnumerable<BaseState> GetStates(StateEntityType entityType)

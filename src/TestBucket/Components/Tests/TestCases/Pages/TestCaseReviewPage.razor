@@ -2,12 +2,14 @@
 @page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Review"
 @using TestBucket.Components.Comments
 @using TestBucket.Components.Comments.Controls
+@using TestBucket.Components.Shared.Profile
 @using TestBucket.Components.Shared.Review.Controllers
 @using TestBucket.Components.Shared.Review.Controls
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Audit.Models
 @using TestBucket.Domain.Comments.Models
 @using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Shared
 @using TestBucket.Domain.Testing.TestRuns.Search
 @layout TestCaseDetailsLayout
 @inject ReviewController reviewController
@@ -57,13 +59,35 @@
                     </div>
                 </MudExpansionPanel>
 
-                <MudExpansionPanel Text="@loc["reviewers"]">
-                    @if (Test?.ReviewAssignedTo is not null)
-                    {
-                        <MudStack Spacing="1">
-                            <TestBucket.Components.Shared.Reviews.AssignedReviewerListEditor ShowVotes="true" AssignedReviewers="@Test.ReviewAssignedTo" />
-                        </MudStack>
-                    }
+                <MudExpansionPanel>
+
+					<TitleContent>
+						<MudStack Class="mud-full-width" AlignItems="AlignItems.Center" Row>
+							@loc["reviewers"]
+
+							@if (Test?.ReviewAssignedTo is not null)
+							{
+								<MudSpacer/>
+								<UserProfileOverlappingList>
+									@foreach(var vote in Test.ReviewAssignedTo.Take(5))
+									{
+										<UserProfileImage UserName="@vote.UserName" />
+									}
+								</UserProfileOverlappingList>
+								<div style="margin-right: 40px"/>
+							}
+						</MudStack>
+					</TitleContent>
+
+					<ChildContent>
+						@if (Test?.ReviewAssignedTo is not null)
+						{
+							<MudStack Spacing="1">
+								<TestBucket.Components.Shared.Reviews.AssignedReviewerListEditor ShowVotes="true" AssignedReviewers="@Test.ReviewAssignedTo" AssignedReviewersChanged="OnAssignedReviewersChanged" />
+							</MudStack>
+						}
+					</ChildContent>
+
                 </MudExpansionPanel>
             </MudExpansionPanels>
 
@@ -89,32 +113,43 @@
 }
 
 @code {
-    [Parameter] public long TestCaseId { get; set; }
-    [Parameter] public string TenantId { get; set; } = "";
-    [CascadingParameter] public TestProject? Project { get; set; }
-    [CascadingParameter] public Team? Team { get; set; }
-    [CascadingParameter] public TestCase? Test { get; set; }
-    private AuditEntry? _selectedEntry;
-    private int _selectedIndex;
-    private List<Comment> _comments = [];
-    private long _testId = 0;
+	[Parameter] public long TestCaseId { get; set; }
+	[Parameter] public string TenantId { get; set; } = "";
+	[CascadingParameter] public TestProject? Project { get; set; }
+	[CascadingParameter] public Team? Team { get; set; }
+	[CascadingParameter] public TestCase? Test { get; set; }
+	private AuditEntry? _selectedEntry;
+	private int _selectedIndex;
+	private List<Comment> _comments = [];
+	private long _testId = 0;
 
-    private IReadOnlyList<AuditEntry> _entries = [];
+	private IReadOnlyList<AuditEntry> _entries = [];
 
-    private async Task Vote(int amount)
-    {
-        if(Test is null)
-        {
-            return;            
-        }
+	private async Task OnAssignedReviewersChanged(List<AssignedReviewer> assignedReviewers)
+	{
+		if(Test is null)
+		{
+			return;
+		}
+		await reviewController.UpdateReviewerListAsync(Test, assignedReviewers);
+	}
 
-        await reviewController.VoteAsync(Test, amount);
-    }
+	private async Task Vote(int amount)
+	{
+		if(Test is null)
+		{
+			return;            
+		}
 
-    protected override void OnParametersSet()
-    {
-        if (Test is not null)
-        {
+		await reviewController.VoteAsync(Test, amount);
+	}
+
+	protected override void OnParametersSet()
+	{
+		if (Test is not null)
+		{
+			Test.ReviewAssignedTo ??= [];
+
             if (_testId != Test.Id)
             {
                 _comments = Test.Comments ?? [];

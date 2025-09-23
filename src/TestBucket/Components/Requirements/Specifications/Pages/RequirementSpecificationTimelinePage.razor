@@ -12,23 +12,28 @@
 @implements IRequirementObserver
 @implements IDisposable
 @inject IRequirementManager manager
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="container-fill scroll">
-    @if (_specification is not null && Project is not null)
-    {
-          <MudGanttChart  Tasks="@_tasks" 
-                        Dense
-                        Size="Size.Small"
-                        Events="@_events" 
-                        TaskDatesChanged="OnDatesChanged"
-                        TaskClicked="OnTaskClicked"
-                        ContextMenuOpening="OnTaskContextMenuOpening"
-                        TaskProgressChanged="OnProgressChanged">
-                        <TaskContextMenu>
-                            <CommandMenuItems Flatten TypeNames="Requirement"/>
-                        </TaskContextMenu>
-        </MudGanttChart>        
-    }
+	@if (_specification is not null && Project is not null)
+	{
+		<MudGanttChart Tasks="@_tasks"
+					   @ref="_mudGanttChart"
+					   Dense
+					   Size="Size.Small"
+					   Events="@_events"
+					   TaskDatesChanged="OnDatesChanged"
+					   TaskClicked="OnTaskClicked"
+					   ContextMenuOpening="OnTaskContextMenuOpening"
+					   TaskProgressChanged="OnProgressChanged">
+			<TaskContextMenu>
+				<MudMenuItem Icon="@Icons.Material.Filled.ZoomIn" OnClick="ZoonInAsync">@loc["zoom-in"]</MudMenuItem>
+				<MudMenuItem Icon="@Icons.Material.Filled.ZoomOut" OnClick="ZoonOutAsync">@loc["zoom-out"]</MudMenuItem>
+				<MudDivider />
+				<CommandMenuItems Flatten TypeNames="Requirement" />
+			</TaskContextMenu>
+		</MudGanttChart>
+	}
 </MudStack>
 
 @code {
@@ -38,21 +43,36 @@
 	[CascadingParameter] public TestProject? Project { get; set; }
 	[CascadingParameter] public RequirementSpecification? RequirementSpecification { get; set; }
 
+	private MudGanttChart _mudGanttChart = default!;
+
 	private RequirementSpecification? _specification;
 	private Requirement[] _requirements = [];
 
 	private List<MudGanttTask> _tasks = [];
 	private List<MudGanttEvent> _events = [];
 
-	private void OnTaskContextMenuOpening(MudGanttTask task)
+	private async Task ZoonInAsync()
 	{
-		if (long.TryParse(task.Id, out var id))
+		await _mudGanttChart.ZoomInAsync();
+	}
+	private async Task ZoonOutAsync()
+	{
+		await _mudGanttChart.ZoomOutAsync();
+	}
+
+	private void OnTaskContextMenuOpening(MudGanttTask? task)
+	{
+		if (task is not null && long.TryParse(task.Id, out var id))
 		{
 			var requirement = _requirements.FirstOrDefault(x => x.Id == id);
 			if (requirement is not null)
 			{
 				appNavigationManager.State.SetSelectedRequirement(requirement);
 			}
+		}
+		else
+		{
+			appNavigationManager.State.ClearSelection();
 		}
 	}
 
@@ -95,7 +115,7 @@
 
 	private async Task ReloadRequirementsAsync()
 	{
-		if(_specification is null)
+		if (_specification is null)
 		{
 			return;
 		}
@@ -122,7 +142,7 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		if(RequirementSpecification is not null && RequirementSpecification.Id != _specification?.Id)
+		if (RequirementSpecification is not null && RequirementSpecification.Id != _specification?.Id)
 		{
 			_specification = RequirementSpecification;
 
@@ -136,7 +156,7 @@
 
 			await ReloadRequirementsAsync();
 		}
-    }
+	}
 
 	protected override void OnInitialized()
 	{

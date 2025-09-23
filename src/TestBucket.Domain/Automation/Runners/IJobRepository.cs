@@ -11,8 +11,25 @@ namespace TestBucket.Domain.Automation.Runners
 {
     public interface IJobRepository
     {
+        /// <summary>
+        /// Adds a job
+        /// </summary>
+        /// <param name="job"></param>
+        /// <returns></returns>
         Task AddAsync(Job job);
+
+        /// <summary>
+        /// Returns a job from guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         Task<Job?> GetByGuidAsync(string guid);        
+
+        /// <summary>
+        /// Returns a job from the ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<Job?> GetByIdAsync(long id);
 
         /// <summary>
@@ -27,6 +44,12 @@ namespace TestBucket.Domain.Automation.Runners
         /// <param name="languages">The job must match one of these languages4</param>
         /// <returns></returns>
         Task<Job?> GetOneAsync(string tenantId, long? projectId, PipelineJobStatus status, string[] languages);
+
+        /// <summary>
+        /// Updates a job
+        /// </summary>
+        /// <param name="job"></param>
+        /// <returns></returns>
         Task UpdateAsync(Job job);
     }
 }

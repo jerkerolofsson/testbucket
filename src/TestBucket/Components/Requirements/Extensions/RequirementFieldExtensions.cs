@@ -19,6 +19,20 @@ internal static class RequirementFieldExtensions
         }
         return null;
     }
+    public static string? GetComponent(this Requirement requirement)
+    {
+        if (requirement.RequirementFields is not null)
+        {
+            foreach (var field in requirement.RequirementFields)
+            {
+                if (field.FieldDefinition?.TraitType == TraitType.Component)
+                {
+                    return field.GetValueAsString();
+                }
+            }
+        }
+        return null;
+    }
     public static string? GetFeature(this Requirement requirement)
     {
         if (requirement.RequirementFields is not null)

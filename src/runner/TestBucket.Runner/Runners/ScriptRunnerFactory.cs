@@ -19,6 +19,7 @@ namespace TestBucket.Runner.Runners
                 "cmd" => new CmdRunner(),
 
                 "python" => new PythonRunner(),
+                "csharp" => new CSharpRunner(),
 
                 "pwsh" => new PowershellRunner(),
                 "powershell" => new PowershellRunner(),

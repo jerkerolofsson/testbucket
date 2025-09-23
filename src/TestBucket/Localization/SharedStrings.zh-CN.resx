@@ -1176,4 +1176,22 @@
   <data name="add-default-milestone-to-imported-run-description" xml:space="preserve">
     <value />
   </data>
+  <data name="zoom-in" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zoom-out" xml:space="preserve">
+    <value />
+  </data>
+  <data name="assign-to-me" xml:space="preserve">
+    <value />
+  </data>
+  <data name="assign-to" xml:space="preserve">
+    <value />
+  </data>
+  <data name="assign" xml:space="preserve">
+    <value />
+  </data>
+  <data name="no-data-alert" xml:space="preserve">
+    <value />
+  </data>
 </root>

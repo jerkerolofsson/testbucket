@@ -409,6 +409,8 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, SplitSpecificationCommand>();
         builder.Services.AddScoped<ICommand, ApproveRequirementCommand>();
         builder.Services.AddScoped<ICommand, EditRequirementCommand>();
+        builder.Services.AddScoped<ICommand, AssignRequirementToMeCommand>();
+        builder.Services.AddScoped<ICommand, AssignRequirementToCommand>();
 
         builder.Services.AddScoped<ICommand, LinkRequirementToTestCommand>();
         builder.Services.AddScoped<ICommand, CreateRequirementCommand>();

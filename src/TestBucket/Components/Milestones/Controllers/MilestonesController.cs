@@ -130,4 +130,15 @@ internal class MilestonesController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         return await _milestoneManager.GetMilestonesAsync(principal, project.Id);
     }
+
+    /// <summary>
+    /// Retrieves the list of open milestones for the specified or currently selected project.
+    /// </summary>
+    /// <param name="project">The project to retrieve milestones for. If null, uses the currently selected project.</param>
+    /// <returns>A read-only list of milestones.</returns>
+    public async Task<IReadOnlyList<Milestone>> GetOpenMilestonesAsync(TestProject? project)
+    {
+        var milestones = await GetMilestonesAsync(project);
+        return milestones.Where(x => x.State == Contracts.Issues.Models.MilestoneState.Open).ToList();
+    }
 }

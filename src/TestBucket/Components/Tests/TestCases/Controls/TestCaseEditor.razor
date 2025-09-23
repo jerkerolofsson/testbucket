@@ -21,17 +21,7 @@
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
 
-                    <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
-                        @if (ReadOnly)
-                        {
-                            <MudText Typo="Typo.h1" Color="Color.Primary" data-testid="external-display-id" data-id="@Test.ExternalDisplayId">@Test.ExternalDisplayId</MudText>
-                            <MudText Typo="Typo.h1">@Test.Name</MudText>
-                        }
-                        else
-                        {
-                            <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Test.Name" ValueChanged="OnNameChanged" T="string" />
-                        }
-                    </MudStack>
+                   
 
                     @if (_errors.Count > 0)
                     {
@@ -45,32 +35,7 @@
                             </MudStack>
                         }
                     }
-                    <MudExpansionPanels>
-                        <MudExpansionPanel Text="@loc["pre-conditions"]">
-                            <MarkdownEditor Value="@PreconditionsText"
-                                    ToolbarButtonClass="tb-markdown-toolbar-button"
-                                    IconSize="Size.Medium"
-                                    CanToggleEdit="false"
-                                            @ref=_preconditionsEditor
-                                            UploadHandler="@UploadHandler"
-                                            ValueChanged="OnPreconditionsChanged"
-                                            Preview="@ReadOnly"
-                                            TextAreaClass="tb-test-preconditions" />
-                        </MudExpansionPanel>
-                        <MudExpansionPanel Text="@loc["post-conditions"]">
-                            <MarkdownEditor Value="@PostconditionsText"
-                                    ToolbarButtonClass="tb-markdown-toolbar-button"
-                                    IconSize="Size.Medium"
-                                    CanToggleEdit="false"
-                                            @ref=_postconditionsEditor
-                                            UploadHandler="@UploadHandler"
-                                            ValueChanged="OnPostconditionsChanged"
-                                            Preview="@ReadOnly"
-                                            TextAreaClass="tb-test-postconditions" />
-                        </MudExpansionPanel>
-                       
-                    </MudExpansionPanels>
-
+                   
                     @if (string.IsNullOrEmpty(Test?.RunnerLanguage) || !ReadOnly)
                     {
                         <MarkdownEditor Value="@Text"
@@ -81,17 +46,62 @@
                                         UploadHandler="@UploadHandler"
                                         EnableRunCode
                                         EnableCopyCodeToClipboard
-                                        RunCodeLanguages="http pwsh python"
+                                        RunCodeLanguages="http pwsh python csharp"
                                         RunCode="OnRunCodeClickedAsync"
                                         ValueChanged="OnDescriptionChanged"
                                         Preview="@ReadOnly"
-                                        TextAreaClass="tb-test-description" />
+                                        TextAreaClass="tb-test-description">
+							<ToolBarStartContent>
+								<MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+									@if (ReadOnly)
+									{
+										<MudText Typo="Typo.h1" Color="Color.Primary" data-testid="external-display-id" data-id="@Test.ExternalDisplayId">@Test.ExternalDisplayId</MudText>
+										<MudText Typo="Typo.h1">@Test.Name</MudText>
+									}
+									else
+									{
+										<MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Test.Name" ValueChanged="OnNameChanged" T="string" />
+									}
+								</MudStack>
+							</ToolBarStartContent>
+						</MarkdownEditor>
                     }
                     else if(Test is not null)
                     {
                         // Read only, automated test
+						<MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+							<MudText Typo="Typo.h1" Color="Color.Primary" data-testid="external-display-id" data-id="@Test.ExternalDisplayId">@Test.ExternalDisplayId</MudText>
+							<MudText Typo="Typo.h1">@Test.Name</MudText>
+						</MudStack>
+
                         <CodeBlock Language="@Test.RunnerLanguage" Code="@Text" ShowEditButton EditClicked="EditClicked" />
                     }
+
+					<MudExpansionPanels>
+						<MudExpansionPanel Text="@loc["pre-conditions"]">
+							<MarkdownEditor Value="@PreconditionsText"
+											ToolbarButtonClass="tb-markdown-toolbar-button"
+											IconSize="Size.Medium"
+											CanToggleEdit="false"
+											@ref=_preconditionsEditor
+											UploadHandler="@UploadHandler"
+											ValueChanged="OnPreconditionsChanged"
+											Preview="@ReadOnly"
+											TextAreaClass="tb-test-preconditions" />
+						</MudExpansionPanel>
+						<MudExpansionPanel Text="@loc["post-conditions"]">
+							<MarkdownEditor Value="@PostconditionsText"
+											ToolbarButtonClass="tb-markdown-toolbar-button"
+											IconSize="Size.Medium"
+											CanToggleEdit="false"
+											@ref=_postconditionsEditor
+											UploadHandler="@UploadHandler"
+											ValueChanged="OnPostconditionsChanged"
+											Preview="@ReadOnly"
+											TextAreaClass="tb-test-postconditions" />
+						</MudExpansionPanel>
+
+					</MudExpansionPanels>
 
                     <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
                 </MudStack>

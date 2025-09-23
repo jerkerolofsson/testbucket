@@ -10,6 +10,8 @@ namespace TestBucket.Domain.Automation.Runners.Jobs
     {
         private volatile TaskCompletionSource<bool> m_tcs = new TaskCompletionSource<bool>();
 
+        public string? JobGuid { get; private set; }
+
         public Task WaitAsync() { return m_tcs.Task; }
 
         public Task WaitAsync(TimeSpan timeout)
@@ -19,8 +21,9 @@ namespace TestBucket.Domain.Automation.Runners.Jobs
             return Task.WhenAny(eventTask, delayTask);
         }
 
-        public void Set()
+        public void Set(string guid)
         {
+            JobGuid = guid;
             var tcs = m_tcs;
             Task.Factory.StartNew(s => ((TaskCompletionSource<bool>)s!).TrySetResult(true),
                 tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
